@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import loginController from "../controllers/login.controller";
-import { bodyJsonSchema } from "../models/login.model";
+import { bodyJsonSchema } from "../models/auth.model";
 
 const schema = {
   body: bodyJsonSchema,

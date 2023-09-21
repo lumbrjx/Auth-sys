@@ -11,7 +11,13 @@ export const bodyJsonSchema = {
     password: { type: "string" },
   },
 };
-export const MySchema = z.object({
+export const LoginSchema = z.object({
   username: z.string(),
   password: z.string(),
+});
+export const RegisterSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+  email: z.string(),
+  preference: z.string(),
 });

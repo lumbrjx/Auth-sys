@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
-import { LoginSchema } from "../models/auth.model";
+import { RegisterSchema } from "../models/auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
-export default async function loginController(
+export default async function reigsterController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
-    const parsedBody = LoginSchema.parse(req.body);
+    const parsedBody = RegisterSchema.parse(req.body);
 
     reply.code(201).send({ message: parsedBody });
   } catch (error: any) {
