@@ -20,6 +20,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@prisma/client": "^5.3.1",
     "fastify-zod": "^1.4.0",
     "zod": "^3.22.2"
   }

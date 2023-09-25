@@ -1,0 +1,10 @@
+version: '3'
+services:
+  prisma-mysql:
+    image: mysql:latest
+    container_name: prisma-mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: mysql-container-database
+    ports:
+      - '3306:3306'
