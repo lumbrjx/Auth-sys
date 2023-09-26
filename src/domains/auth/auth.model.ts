@@ -21,3 +21,4 @@ export const RegisterSchema = z.object({
   email: z.string(),
   preference: z.string(),
 });
+export interface RegisterData extends z.infer<typeof RegisterSchema> {}
