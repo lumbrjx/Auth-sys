@@ -32,6 +32,7 @@ export default async function (fastify: any) {
             username: user.name,
             email: user.email as string,
             password: user.id,
+            type: "OAUTH2",
           },
         });
       }
@@ -43,12 +44,13 @@ export default async function (fastify: any) {
 
         JSON.stringify({ ...user, sessionId: req.session.sessionId })
       );
+      // TTL
       await redis.expire(req.session.sessionId, 180);
       //redirect the user to a protected route
       res.redirect("http://localhost:8080/");
     }
   );
-
+  // dev function
   fastify.get("/getAllRecords", async (request: any, reply: any) => {
     try {
       const keys = await fastify.redis.keys("*"); // Get all keys
