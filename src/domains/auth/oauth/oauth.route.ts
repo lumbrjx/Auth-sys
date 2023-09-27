@@ -1,11 +1,13 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
+import checkAuthentication from "../../../middlewares/checkAuthentication";
 
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
     "/api/auth/callback/google",
+
     async function (req: FastifyRequest, res: FastifyReply) {
       // Fastify instance gets decorated with this method on OAuth plugin initialization
       const token =

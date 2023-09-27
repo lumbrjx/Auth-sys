@@ -7,12 +7,12 @@ const server = fastify({
   logger: false,
 });
 
-configureRedis(server);
-configureOAuth2(server);
-configureSession(server);
-server.register(import("./domains/auth/auth.route"));
-server.register(import("./domains/auth/oauth/oauth.route"));
-server.register(import("./domains/admin/admin.route"));
+configureRedis(server); // redis client
+configureOAuth2(server); // oauth provider
+configureSession(server); // session config
+server.register(import("./domains/auth/auth.route")); // credentials auth routes
+server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
+server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", async (request, reply) => {
   reply.send(request.url);

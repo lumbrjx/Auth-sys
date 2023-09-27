@@ -1,23 +1,27 @@
-import fastify, {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-} from "fastify";
+import { FastifyRequest, FastifyReply } from "fastify";
+
 export default async function checkAuthentication(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { redis } = fastify as any;
-
   try {
-    const session = await redis.get(request.session.sessionId);
+    console.log(request.session.sessionId);
+
+    // Access the Redis client through the fastify instance
+    const session = await request.server.redis.get(request.session.sessionId);
+    console.log("im session", session);
+    if (session === null) {
+      console.log("no session");
+      reply.redirect("/");
+    }
     console.log(request.url);
     if (session && request.url === "/login/google") {
       console.log("you're already signed in");
       reply.redirect("/");
     }
   } catch (err) {
-    console.error(err);
+    console.log("not authorized");
+
+    reply.redirect("/");
   }
-  // Check if the session exists in Redis
 }

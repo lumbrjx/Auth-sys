@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const fastify = require("fastify")({ logger: { level: "trace" } });
 const oauthPlugin = require("@fastify/oauth2");
 async function configureOAuth2(fastify: any) {
   fastify.register(oauthPlugin, {
