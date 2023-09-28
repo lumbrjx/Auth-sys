@@ -7,7 +7,6 @@ export default async function(fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
     "/api/auth/callback/google",
-
     async function(req: FastifyRequest, res: FastifyReply) {
       // Fastify instance gets decorated with this method on OAuth plugin initialization
       const token =
@@ -15,11 +14,7 @@ export default async function(fastify: any) {
       //get the user info from google
       const userInfoResponse = await axios.get(
         "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          headers: {
-            Authorization: `Bearer ${token.access_token}`,
-          },
-        },
+        { headers: { Authorization: `Bearer ${token.access_token}` } },
       );
       const user = await userInfoResponse.data;
       // Store user data or create a new user in your database using Prisma
@@ -31,7 +26,7 @@ export default async function(fastify: any) {
           data: {
             username: user.name,
             email: user.email as string,
-            password: user.id,
+            oAuthToken: user.id,
             type: "OAUTH2",
           },
         });
@@ -41,7 +36,6 @@ export default async function(fastify: any) {
       const { redis } = fastify;
       await redis.set(
         req.session.sessionId,
-
         JSON.stringify({ ...user, sessionId: req.session.sessionId }),
       );
       // TTL
@@ -55,7 +49,6 @@ export default async function(fastify: any) {
     try {
       const keys = await fastify.redis.keys("*"); // Get all keys
       const values = await fastify.redis.mget(...keys); // Get values for all keys
-
       const records = keys.reduce((result: any, key: any, index: any) => {
         result[key] = values[index];
         return result;

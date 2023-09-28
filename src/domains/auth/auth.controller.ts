@@ -18,12 +18,12 @@ export async function loginController(
     const existingUser = userResult.data;
 
     if (existingUser?.type === "OAUTH2") {
-      reply.code(401).send("Invalid operation");
+      return reply.code(401).send("Invalid operation");
     }
     if (existingUser?.password !== parsedBody.password) {
-      reply.code(401).send("Invalid passowrd or email");
+      return reply.code(401).send("Invalid passowrd or email");
     }
-    // No need to branch here, always prevent from more nested branching
+    // No need to branch here, always prevent from more nested branching, so you can remove this code comment
     // if (existingUser?.password === parsedBody.password) {
     await req.server.redis.set(
       req.session.sessionId,
@@ -31,14 +31,14 @@ export async function loginController(
     );
     // TTL
     await req.server.redis.expire(req.session.sessionId, 180);
-    reply.send("Authorized");
+    return reply.send("Authorized");
     // }
   } catch (error: any) {
     if (error instanceof ZodError) {
-      reply.status(400).send({ error: error.issues[0].message });
+      return reply.status(400).send({ error: error.issues[0].message });
     } else {
       console.log(error);
-      reply.status(500).send({ error: "Internal Server Error" });
+      return reply.status(500).send({ error: "Internal Server Error" });
     }
   }
 }
