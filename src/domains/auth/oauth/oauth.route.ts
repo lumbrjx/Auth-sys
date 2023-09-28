@@ -3,12 +3,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 import prisma from "../../../config/prisma-client";
 
-export default async function (fastify: any) {
+export default async function(fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
     "/api/auth/callback/google",
 
-    async function (req: FastifyRequest, res: FastifyReply) {
+    async function(req: FastifyRequest, res: FastifyReply) {
       // Fastify instance gets decorated with this method on OAuth plugin initialization
       const token =
         await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(req);
