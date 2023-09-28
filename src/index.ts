@@ -1,7 +1,10 @@
 import fastify from "fastify";
-import configureSession from "./client/session";
-import configureOAuth2 from "./client/oauth";
-import configureRedis from "./client/redis-client";
+import configureSession from "./config/session";
+import configureOAuth2 from "./config/oauth";
+import configureRedis from "./config/redis-client";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 const server = fastify({
   logger: false,
@@ -10,6 +13,7 @@ const server = fastify({
 configureRedis(server); // redis client
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
+
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
 server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
 server.register(import("./domains/admin/admin.route")); // protected route
@@ -18,7 +22,9 @@ server.get("/", async (request, reply) => {
   reply.send(request.url);
 });
 
-server.listen({ port: 8080 }, (err, address) => {
+const PORT = parseInt(process.env.PORT ?? "") || 8080;
+
+server.listen({ port: PORT }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
