@@ -9,11 +9,11 @@ export default async function checkAuthentication(
     const session = await request.server.redis.get(request.session.sessionId);
     if (session === null) {
       console.log("no session");
-      reply.redirect("/");
+      reply.code(401).redirect("/");
     }
   } catch (err) {
     console.log("Error while trying to authenticate, Please login again.");
 
-    reply.redirect("/");
+    reply.code(500).redirect("/");
   }
 }
