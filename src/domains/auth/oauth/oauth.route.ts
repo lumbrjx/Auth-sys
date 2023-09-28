@@ -1,7 +1,7 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
-import prisma from "../../../client/prisma-client";
+import prisma from "../../../config/prisma-client";
 
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
@@ -19,7 +19,7 @@ export default async function (fastify: any) {
           headers: {
             Authorization: `Bearer ${token.access_token}`,
           },
-        }
+        },
       );
       const user = await userInfoResponse.data;
       // Store user data or create a new user in your database using Prisma
@@ -42,13 +42,13 @@ export default async function (fastify: any) {
       await redis.set(
         req.session.sessionId,
 
-        JSON.stringify({ ...user, sessionId: req.session.sessionId })
+        JSON.stringify({ ...user, sessionId: req.session.sessionId }),
       );
       // TTL
       await redis.expire(req.session.sessionId, 180);
       //redirect the user to a protected route
       res.redirect("http://localhost:8080/");
-    }
+    },
   );
   // dev function
   fastify.get("/getAllRecords", async (request: any, reply: any) => {

@@ -1,5 +1,6 @@
-import prisma from "../../client/prisma-client";
-import { LoginData, RegisterData } from "./auth.model";
+import prisma from "../../config/prisma-client";
+import { RegisterData } from "./auth.model";
+
 export async function createUser(user: RegisterData) {
   const newUser = await prisma.user.create({
     data: {
@@ -12,12 +13,14 @@ export async function createUser(user: RegisterData) {
   });
   return newUser;
 }
+
 export async function getUser(email: string) {
   const user = await prisma.user.findUnique({
     where: { email: email },
   });
   return user;
 }
+
 module.exports = {
   createUser,
   getUser,
