@@ -1,6 +1,7 @@
 import prisma, { User } from "../../config/prisma-client";
 import { Result, parseToResult } from "../../result.model";
 import { RegisterData } from "./auth.model";
+
 export async function createUser(user: RegisterData) {
   const newUser = await prisma.user.create({
     data: {
@@ -13,8 +14,10 @@ export async function createUser(user: RegisterData) {
   });
   return newUser;
 }
+
 export async function getUser(
   email: string
+
 ): Promise<Result<User | undefined | null, Error | undefined>> {
   try {
     const user = await prisma.user.findUnique({
@@ -25,6 +28,7 @@ export async function getUser(
     return parseToResult(undefined, error as Error);
   }
 }
+
 module.exports = {
   createUser,
   getUser,

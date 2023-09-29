@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 
 export default async function checkAuthentication(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     // Access the Redis client through the fastify instance

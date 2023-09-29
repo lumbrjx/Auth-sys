@@ -1,4 +1,5 @@
 import oAuthPlugin from "@fastify/oauth2";
+
 async function configureOAuth2(fastify: any) {
   fastify.register(oAuthPlugin, {
     name: "googleOAuth2",

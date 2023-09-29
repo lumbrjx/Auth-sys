@@ -11,16 +11,19 @@ export const bodyJsonSchema = {
     password: { type: "string" },
   },
 };
+
 export const LoginSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
+
 export const RegisterSchema = z.object({
   username: z.string(),
   password: z.string(),
   email: z.string(),
   preference: z.string(),
 });
+
 export const RegisterOauthSchema = z.object({
   name: z.string().optional(),
   id: z.string().optional(),
@@ -29,7 +32,8 @@ export const RegisterOauthSchema = z.object({
   email: z.string(),
   preference: z.string(),
 });
-export interface RegisterData extends z.infer<typeof RegisterSchema> {}
-export interface LoginData extends z.infer<typeof LoginSchema> {}
+
+export interface RegisterData extends z.infer<typeof RegisterSchema> { }
+export interface LoginData extends z.infer<typeof LoginSchema> { }
 export interface RegisterOauthData
-  extends z.infer<typeof RegisterOauthSchema> {}
+  extends z.infer<typeof RegisterOauthSchema> { }

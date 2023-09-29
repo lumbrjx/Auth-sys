@@ -5,7 +5,7 @@ import { createUser, getUser } from "./auth.services";
 
 export async function loginController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = LoginSchema.parse(req.body);
@@ -27,7 +27,9 @@ export async function loginController(
     // if (existingUser?.password === parsedBody.password) {
     await req.server.redis.set(
       req.session.sessionId,
+
       JSON.stringify({ ...existingUser, sessionId: req.session.sessionId })
+
     );
     // TTL
     await req.server.redis.expire(req.session.sessionId, 180);
@@ -45,7 +47,7 @@ export async function loginController(
 
 export async function reigsterController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = RegisterSchema.parse(req.body);
