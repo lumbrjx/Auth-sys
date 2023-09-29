@@ -1,4 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import redis from "../../config/redis-client";
 
 export async function adminController(
   request: FastifyRequest,
@@ -6,5 +7,5 @@ export async function adminController(
 ) {
   reply.send("super sensitive data is sent");
 
-  await request.server.redis.expire(request.session.sessionId, 180);
+  await redis.expire(request.session.sessionId, 180);
 }

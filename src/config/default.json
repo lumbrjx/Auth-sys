@@ -1,0 +1,4 @@
+{
+  "oauth_start_redirect_path": "/login/google",
+  "oauth_callback_Uri": "http://localhost:8080/api/auth/callback/google"
+}

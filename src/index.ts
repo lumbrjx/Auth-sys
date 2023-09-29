@@ -10,7 +10,7 @@ const server = fastify({
   logger: false,
 });
 
-configureRedis(server); // redis client
+// configureRedis(server); // redis client
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
 

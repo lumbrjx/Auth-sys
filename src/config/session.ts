@@ -7,7 +7,6 @@ async function configureSession(fastify: FastifyInstance) {
   fastify.register(fastifyCookie);
 
   fastify.register(fastifySession, {
-    store: fastify.redis,
     secret: process.env.SESSION_SECRET as string,
     cookie: {
       secure: false,

@@ -1,8 +1,5 @@
-import { FastifyInstance } from "fastify";
-import fastifyRedis from "@fastify/redis";
+import Redis from "ioredis";
 
-export default function configureRedis(fastify: FastifyInstance) {
-  fastify.register(fastifyRedis, {
-    url: process.env.REDIS_URL,
-  });
-}
+const redis = new Redis();
+
+export default redis;

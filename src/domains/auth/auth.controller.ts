@@ -2,13 +2,15 @@ import { ZodError } from "zod";
 import { LoginSchema, RegisterSchema } from "./auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createUser, getUser } from "./auth.services";
+import redis from "../../config/redis-client";
 
 export async function loginController(
   req: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) {
   try {
     const parsedBody = LoginSchema.parse(req.body);
+
     const userResult = await getUser(parsedBody.email);
     if (!userResult.success) {
       reply
@@ -25,14 +27,13 @@ export async function loginController(
     }
     // No need to branch here, always prevent from more nested branching, so you can remove this code comment
     // if (existingUser?.password === parsedBody.password) {
-    await req.server.redis.set(
+    await redis.set(
       req.session.sessionId,
 
       JSON.stringify({ ...existingUser, sessionId: req.session.sessionId })
-
     );
     // TTL
-    await req.server.redis.expire(req.session.sessionId, 180);
+    await redis.expire(req.session.sessionId, 180);
     return reply.send("Authorized");
     // }
   } catch (error: any) {
@@ -47,7 +48,7 @@ export async function loginController(
 
 export async function reigsterController(
   req: FastifyRequest,
-  reply: FastifyReply,
+  reply: FastifyReply
 ) {
   try {
     const parsedBody = RegisterSchema.parse(req.body);
