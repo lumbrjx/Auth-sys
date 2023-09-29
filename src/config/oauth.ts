@@ -1,16 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const oauthPlugin = require("@fastify/oauth2");
+import oAuthPlugin from "@fastify/oauth2";
 async function configureOAuth2(fastify: any) {
-  fastify.register(oauthPlugin, {
+  fastify.register(oAuthPlugin, {
     name: "googleOAuth2",
     credentials: {
       client: {
         id: process.env.GOOGLE_CLIENT_ID as string,
         secret: process.env.GOOGLE_CLIENT_SECRET as string,
       },
-      auth: oauthPlugin.GOOGLE_CONFIGURATION,
+      auth: oAuthPlugin.GOOGLE_CONFIGURATION,
     },
     scope: ["openid", "profile", "email"],
     // register a fastify url to start the redirect flow

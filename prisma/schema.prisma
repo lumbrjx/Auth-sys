@@ -13,7 +13,8 @@ datasource db {
 model User {
   id         String  @id @default(cuid())
   username   String  @unique
-  password   String
+  password   String?
+  oauthToken String?
   email      String? @unique
   preference String?
   type       String

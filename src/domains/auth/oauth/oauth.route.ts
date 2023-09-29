@@ -1,7 +1,7 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
-import prisma from "../../../client/prisma-client";
+import prisma from "../../../config/prisma-client";
 
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
@@ -31,7 +31,7 @@ export default async function (fastify: any) {
           data: {
             username: user.name,
             email: user.email as string,
-            password: user.id,
+            oauthToken: user.id,
             type: "OAUTH2",
           },
         });

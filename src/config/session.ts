@@ -2,8 +2,7 @@
 import { FastifyInstance } from "fastify";
 import fastifySession from "@fastify/session";
 import fastifyCookie from "@fastify/cookie";
-import dotenv from "dotenv";
-dotenv.config();
+
 async function configureSession(fastify: FastifyInstance) {
   fastify.register(fastifyCookie);
 

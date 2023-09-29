@@ -1,5 +1,6 @@
-import prisma from "../../client/prisma-client";
-import { LoginData, RegisterData } from "./auth.model";
+import prisma, { User } from "../../config/prisma-client";
+import { Result, parseToResult } from "../../result.model";
+import { RegisterData } from "./auth.model";
 export async function createUser(user: RegisterData) {
   const newUser = await prisma.user.create({
     data: {
@@ -12,11 +13,17 @@ export async function createUser(user: RegisterData) {
   });
   return newUser;
 }
-export async function getUser(email: string) {
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-  });
-  return user;
+export async function getUser(
+  email: string
+): Promise<Result<User | undefined | null, Error | undefined>> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: email },
+    });
+    return parseToResult(user);
+  } catch (error) {
+    return parseToResult(undefined, error as Error);
+  }
 }
 module.exports = {
   createUser,
