@@ -27,7 +27,9 @@ export async function loginController(
     // if (existingUser?.password === parsedBody.password) {
     await req.server.redis.set(
       req.session.sessionId,
-      JSON.stringify({ ...existingUser, sessionId: req.session.sessionId }),
+
+      JSON.stringify({ ...existingUser, sessionId: req.session.sessionId })
+
     );
     // TTL
     await req.server.redis.expire(req.session.sessionId, 180);

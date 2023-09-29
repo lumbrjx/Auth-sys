@@ -16,7 +16,8 @@ export async function createUser(user: RegisterData) {
 }
 
 export async function getUser(
-  email: string,
+  email: string
+
 ): Promise<Result<User | undefined | null, Error | undefined>> {
   try {
     const user = await prisma.user.findUnique({

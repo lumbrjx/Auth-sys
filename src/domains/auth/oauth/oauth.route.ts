@@ -26,7 +26,9 @@ export default async function(fastify: any) {
           data: {
             username: user.name,
             email: user.email as string,
-            oAuthToken: user.id,
+
+            oauthToken: user.id,
+
             type: "OAUTH2",
           },
         });
