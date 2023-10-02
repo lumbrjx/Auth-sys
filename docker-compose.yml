@@ -1,17 +1,17 @@
-version: '3'
+version: "3"
 services:
   prisma-mysql:
     image: mysql:latest
-    container_name: prisma-mysql-container-dev
+    container_name: prisma-mysql-container-dev1
     environment:
-      MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfcc
-      MYSQL_DATABASE: mysql-image-database
+      MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
+      MYSQL_DATABASE: mysql-image-database1
     ports:
-      - '3306:3306'
+      - "3306:3306"
   prisma-redis:
     image: redis:latest
-    container_name: prisma-redis-container-dev
+    container_name: prisma-redis-container-dev1
     environment:
-      REDIS_PASSWORD: qsdfsqjklhqo6q4sfFGHazf5464  
+      REDIS_PASSWORD: qsdfsqjklhqo6q4sfFGHazf5464
     ports:
-      - '6379:6379'
+      - "6379:6379"

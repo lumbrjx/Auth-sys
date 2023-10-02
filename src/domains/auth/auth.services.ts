@@ -1,4 +1,4 @@
-import prisma, { User } from "../../config/prisma-client";
+import prisma, { user } from "../../config/prisma-client";
 import { Result, parseToResult } from "../../result.model";
 import { RegisterData } from "./auth.model";
 
@@ -17,8 +17,7 @@ export async function createUser(user: RegisterData) {
 
 export async function getUser(
   email: string
-
-): Promise<Result<User | undefined | null, Error | undefined>> {
+): Promise<Result<user | undefined | null, Error | undefined>> {
   try {
     const user = await prisma.user.findUnique({
       where: { email: email },
