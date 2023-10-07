@@ -8,7 +8,6 @@ export async function createUser(user: RegisterData) {
       username: user.username,
       password: user.password,
       email: user.email,
-      preference: user.preference,
       type: "CREDENTIALS",
     },
   });

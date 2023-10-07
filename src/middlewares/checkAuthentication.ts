@@ -6,7 +6,7 @@ export default async function checkAuthentication(
 ) {
   try {
     // Access the Redis client through the fastify instance
-    const session = await redis.get(request.session.sessionId);
+    const session = await redis.get(request.session.get("cookie"));
     if (session === null) {
       console.log("no session");
       reply.code(401).redirect("http://localhost:8080/");

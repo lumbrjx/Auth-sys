@@ -3,6 +3,7 @@ import { LoginSchema, RegisterSchema } from "./auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createUser, getUser } from "./auth.services";
 import redis from "../../config/redis-client";
+import { createId } from "@paralleldrive/cuid2";
 
 export async function loginController(
   req: FastifyRequest,
@@ -27,13 +28,15 @@ export async function loginController(
     }
     // No need to branch here, always prevent from more nested branching, so you can remove this code comment
     // if (existingUser?.password === parsedBody.password) {
+    const sessionId = createId();
+    req.session.set("cookie", sessionId);
     await redis.set(
-      req.session.sessionId,
+      sessionId,
 
-      JSON.stringify({ ...existingUser, sessionId: req.session.sessionId })
+      JSON.stringify({ ...existingUser, sessionId: sessionId })
     );
     // TTL
-    await redis.expire(req.session.sessionId, 180);
+    await redis.expire(sessionId, 180);
     return reply.send("Authorized");
     // }
   } catch (error: any) {

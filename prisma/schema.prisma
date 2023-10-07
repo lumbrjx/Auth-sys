@@ -16,6 +16,5 @@ model user {
   password   String?
   oauthToken String?
   email      String? @unique
-  preference String?
   type       String
 }

@@ -4,12 +4,14 @@ import configureOAuth2 from "./config/oauth";
 import configureRedis from "./config/redis-client";
 
 import dotenv from "dotenv";
+import authorizer from "./middlewares/authorizer";
 dotenv.config();
 
 const server = fastify({
   logger: false,
 });
 
+server.addHook("preHandler", authorizer);
 // configureRedis(server); // redis client
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
@@ -19,7 +21,7 @@ server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", async (request, reply) => {
-  reply.send(request.url);
+  reply.send(request.session);
 });
 
 const PORT = parseInt(process.env.PORT ?? "") || 8080;

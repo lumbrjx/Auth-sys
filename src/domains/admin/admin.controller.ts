@@ -5,7 +5,8 @@ export async function adminController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  reply.send("super sensitive data is sent");
+  console.log(request.url);
+  reply.send(request.url);
 
   await redis.expire(request.session.sessionId, 180);
 }
