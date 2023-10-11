@@ -5,13 +5,14 @@ import configureRedis from "./config/redis-client";
 
 import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
+import refresher from "./middlewares/refresher";
 dotenv.config();
 
 const server = fastify({
   logger: false,
 });
-
 server.addHook("preHandler", authorizer);
+server.addHook("preHandler", refresher);
 // configureRedis(server); // redis client
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config

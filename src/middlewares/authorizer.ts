@@ -18,7 +18,7 @@ export default async function authorizer(
       }
     }
   } catch (err) {
-    console.log("Error while trying to authenticate, Please login again.");
+    console.log("Error while trying to authorize, Please login again.");
 
     reply.code(500).redirect("http://localhost:8080/");
   }
