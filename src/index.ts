@@ -1,7 +1,6 @@
 import fastify from "fastify";
 import configureSession from "./config/session";
 import configureOAuth2 from "./config/oauth";
-import configureRedis from "./config/redis-client";
 
 import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
@@ -13,12 +12,13 @@ const server = fastify({
 });
 server.addHook("preHandler", authorizer);
 server.addHook("preHandler", refresher);
-// configureRedis(server); // redis client
+
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
 
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
 server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
+server.register(import("./domains/auth/reset/reset.route")); // Reset password routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", async (request, reply) => {
