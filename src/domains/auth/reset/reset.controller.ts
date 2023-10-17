@@ -22,7 +22,6 @@ export async function resetController(
 
     await redis.set(userToken, parsedBody.email);
     await redis.expire(userToken, 180);
-    console.log(user);
     reply
       .code(201)
       .send({ fakeEmail: "http://localhost:8080/reset/" + userToken });

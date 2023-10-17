@@ -17,4 +17,5 @@ model user {
   oauthToken String?
   email      String? @unique
   type       String
+  TWO_FA     Boolean @default(false)
 }
