@@ -19,11 +19,6 @@ export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
     }
     await edit2fa(user.data?.email as string, parsedBody.email, true);
 
-    // const userToken = generateRandom6DigitNumber();
-    // console.log(userToken);
-
-    // await redis.set(userToken, parsedBody.email);
-    // await redis.expire(userToken, 180);
     reply.code(200).send("2FA enabeled");
   } catch (error: any) {
     if (error instanceof ZodError) {

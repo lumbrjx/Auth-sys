@@ -1,4 +1,4 @@
-function generateRandom6DigitNumber(): string {
+export function generateRandom6DigitNumber(): string {
   // Generate a random number between 0 and 999999
   const randomNumber = Math.floor(Math.random() * 1000000);
 

@@ -9,7 +9,8 @@ export default async function authorizer(
     if (
       request.url.trim() === "/login/google" ||
       request.url.trim() === "/login" ||
-      request.url.trim() === "/register"
+      request.url.trim() === "/register" ||
+      request.url.trim().includes("/login/2fa")
     ) {
       const session = await redis.get(request.session.get("cookie"));
       if (session) {
