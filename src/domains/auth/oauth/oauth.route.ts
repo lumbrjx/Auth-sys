@@ -4,11 +4,11 @@ import axios from "axios";
 import prisma from "../../../config/prisma-client";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
-
+import * as confdata from "../../../config/default.json";
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
-    "/api/auth/callback/google",
+    confdata.googleCallback,
     async function (req: FastifyRequest, res: FastifyReply) {
       // Fastify instance gets decorated with this method on OAuth plugin initialization
       const token =
@@ -28,14 +28,11 @@ export default async function (fastify: any) {
           data: {
             username: user.name,
             email: user.email as string,
-
             oauthToken: user.id,
-
             type: "OAUTH2",
           },
         });
       }
-
       // save the session in redis
       const sessionId = createId();
       req.session.set("cookie", sessionId);
@@ -44,9 +41,9 @@ export default async function (fastify: any) {
         JSON.stringify({ ...user, sessionId: sessionId })
       );
       // TTL
-      await redis.expire(sessionId, 180);
+      await redis.expire(sessionId, confdata.redisConf.sessionExp);
       //redirect the user to a protected route
-      res.redirect("http://localhost:8080/");
+      res.redirect(confdata.homeUrl);
     }
   );
   // dev function
@@ -65,10 +62,10 @@ export default async function (fastify: any) {
       reply.status(500).send("Error fetching records from Redis");
     }
   });
-  fastify.get("/logout", async (req: any, res: FastifyReply) => {
+  fastify.get(confdata.logout, async (req: any, res: FastifyReply) => {
     await redis.del(req.session.get("cookie"));
     req.session.delete();
-    res.clearCookie("my-session-cookie");
+    res.clearCookie(confdata.cookiesConf.cookiename);
     res.send("logged out");
   });
 }

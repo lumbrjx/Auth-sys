@@ -1,7 +1,6 @@
 import fastify from "fastify";
 import configureSession from "./config/session";
 import configureOAuth2 from "./config/oauth";
-
 import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
 import refresher from "./middlewares/refresher";
@@ -10,8 +9,8 @@ dotenv.config();
 const server = fastify({
   logger: false,
 });
-server.addHook("preHandler", authorizer);
-server.addHook("preHandler", refresher);
+server.addHook("preHandler", authorizer); // Post session authorizer
+server.addHook("preHandler", refresher); // Session refresher
 
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
@@ -23,7 +22,7 @@ server.register(import("./domains/auth/2FA/2FA.route")); // 2fa routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", async (request, reply) => {
-  reply.send(request.session);
+  reply.send("Auth System example made by CLOG9");
 });
 
 const PORT = parseInt(process.env.PORT ?? "") || 8080;

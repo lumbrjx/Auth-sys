@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { resetController, resetTokenController } from "./reset.controller";
-
+import * as confdata from "../../../config/default.json";
 export default async function (app: FastifyInstance) {
-  app.post("/reset", resetController);
-  app.put("/reset/:tokenId", resetTokenController);
+  app.post(confdata.reset, resetController);
+  app.put(confdata.resetDyn, resetTokenController);
 }

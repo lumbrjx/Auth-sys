@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import redis from "../config/redis-client";
+import * as confdata from "../config/default.json";
 export default async function refresher(
   request: FastifyRequest,
   reply: FastifyReply
@@ -10,10 +11,12 @@ export default async function refresher(
     const sessionparsed = await JSON.parse(session as string);
     const sessionTTL = await redis.ttl(sessionparsed.sessionId);
     if (sessionTTL < 60) {
-      await redis.expire(sessionparsed.sessionId, 180);
+      await redis.expire(
+        sessionparsed.sessionId,
+        confdata.redisConf.sessionExp
+      );
     }
   } catch (err) {
-    console.log("Error while trying to refresh, Please login again.");
-    reply.code(500).redirect("http://localhost:8080/");
+    reply.code(500).redirect(confdata.homeUrl);
   }
 }

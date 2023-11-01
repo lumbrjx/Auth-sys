@@ -11,12 +11,10 @@ export const bodyJsonSchema = {
     password: { type: "string" },
   },
 };
-
 export const LoginSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
-
 export const ResetSchema = z.object({
   email: z.string(),
 });
@@ -26,13 +24,11 @@ export const tfacodeSchema = z.object({
 export const ResetTokenSchema = z.object({
   password: z.string(),
 });
-
 export const RegisterSchema = z.object({
   username: z.string(),
   password: z.string(),
   email: z.string(),
 });
-
 export const RegisterOauthSchema = z.object({
   name: z.string().optional(),
   id: z.string().optional(),
@@ -46,6 +42,5 @@ export interface LoginData extends z.infer<typeof LoginSchema> {}
 export interface ResetData extends z.infer<typeof ResetSchema> {}
 export interface ResetTokenData extends z.infer<typeof ResetTokenSchema> {}
 export interface tfacodeData extends z.infer<typeof tfacodeSchema> {}
-
 export interface RegisterOauthData
   extends z.infer<typeof RegisterOauthSchema> {}
