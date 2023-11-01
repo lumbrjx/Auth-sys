@@ -19,6 +19,7 @@ configureSession(server); // session config
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
 server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
 server.register(import("./domains/auth/reset/reset.route")); // Reset password routes
+server.register(import("./domains/auth/2FA/2FA.route")); // 2fa routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", async (request, reply) => {

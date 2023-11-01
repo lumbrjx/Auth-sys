@@ -1,31 +1,62 @@
 import { ZodError } from "zod";
-import { ResetSchema, ResetTokenSchema } from "../auth.model";
+import { ResetSchema } from "../auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { editPassword, getUser } from "../auth.services";
-import { createId } from "@paralleldrive/cuid2";
+import { edit2fa, getUser } from "../auth.services";
+
 import redis from "../../../config/redis-client";
 
 export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
   try {
     const parsedBody = ResetSchema.parse(req.body);
-    const user = await getUser(parsedBody.email);
+    const session = await redis.get(req.session.get("cookie"));
+    const parsedSession = await JSON.parse(session as string);
+    const user = await getUser(parsedSession.email);
     if (user.data === null) {
-      reply.send("A reset link is sent to your email adress.");
+      return reply.send("A 2FA code is sent to your email adress.");
     }
     if (user.data?.type === "OAUTH2") {
-      reply.code(401).send("An Error occured please try again");
+      return reply.code(401).send("An Error occured please try again");
     }
-    const userToken = createId();
+    await edit2fa(user.data?.email as string, parsedBody.email, true);
 
-    await redis.set(userToken, parsedBody.email);
-    await redis.expire(userToken, 180);
-    reply
-      .code(201)
-      .send({ fakeEmail: "http://localhost:8080/reset/" + userToken });
+    // const userToken = generateRandom6DigitNumber();
+    // console.log(userToken);
+
+    // await redis.set(userToken, parsedBody.email);
+    // await redis.expire(userToken, 180);
+    reply.code(200).send("2FA enabeled");
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });
     } else {
+      console.log(error);
+      reply.status(500).send({ error: "Internal Server Error" });
+    }
+  }
+}
+
+export async function TFAControllerDisable(
+  req: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const session = await redis.get(req.session.get("cookie"));
+    const parsedSession = await JSON.parse(session as string);
+    const user = await getUser(parsedSession.email);
+    if (user.data === null) {
+      return reply.send("A 2FA code is sent to your email adress.");
+    }
+    if (user.data?.type === "OAUTH2") {
+      return reply.code(401).send("An Error occured please try again");
+    }
+    await edit2fa(user.data?.email as string, null, false);
+
+    reply.code(200).send("2FA disabled");
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      reply.status(400).send({ error: error.issues[0].message });
+    } else {
+      console.log(error);
       reply.status(500).send({ error: "Internal Server Error" });
     }
   }

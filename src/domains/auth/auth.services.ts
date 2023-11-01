@@ -44,8 +44,31 @@ export async function editPassword(
     return parseToResult(undefined, error as Error);
   }
 }
+
+export async function edit2fa(
+  email: string,
+  tfaemail: string | null,
+  type: boolean
+): Promise<Result<user | undefined | null, Error | undefined>> {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        twoFaEmail: tfaemail,
+        TWO_FA: type,
+      },
+    });
+    return parseToResult(user);
+  } catch (error) {
+    return parseToResult(undefined, error as Error);
+  }
+}
+
 module.exports = {
   createUser,
   getUser,
   editPassword,
+  edit2fa,
 };

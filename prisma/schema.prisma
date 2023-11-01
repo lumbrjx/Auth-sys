@@ -18,4 +18,5 @@ model user {
   email      String? @unique
   type       String
   TWO_FA     Boolean @default(false)
+  twoFaEmail String?
 }
