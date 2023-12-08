@@ -16,7 +16,6 @@ FROM node:${NODE_VERSION} as runner
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 # fastify need python3 and gcc to compile libsoduim.
-RUN apk update && apk add --no-cache dumb-init python3 make g++
 WORKDIR /usr/src/app
 RUN chown node:node ./
 # switch user to node for security
@@ -26,9 +25,10 @@ COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
 # COPY --chown=node:node --from=builder /usr/src/app/.env .env
 COPY --chown=node:node --from=builder /usr/src/app/package.json .
 COPY --chown=node:node --from=builder /usr/src/app/package-lock.json .
-RUN --mount=type=cache,target=/usr/src/app/.npm \
-    npm set cache /usr/src/app/.npm && npm ci --omit=dev
 COPY --chown=node:node --from=builder /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
+RUN --mount=type=cache,target=/usr/src/app/.npm \ 
+apk update && apk add --no-cache dumb-init libsodium && npm set cache /usr/src/app/.npm && npm ci --omit=dev
+
 USER node
 
 EXPOSE 3000
