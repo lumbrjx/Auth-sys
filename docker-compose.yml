@@ -23,17 +23,12 @@ services:
       - prisma-redis-data:/data
 
   app:
-    build:
-      context: .
-    container_name: app
+    image: myimage:latest
     environment:
       MYSQL_ROOT_PASSWORD: mysql_root_password
       REDIS_PASSWORD: redis_password
     ports:
       - "3000:3000"
-    volumes:
-      - ./app:/usr/src/app:ro
-      - /usr/src/app/node_modules
     logging:
       driver: json-file
       options:

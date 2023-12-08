@@ -10,7 +10,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "nodemon --watch src src/index.ts",
-    "docker:build": "docker build . --build-arg NODE_VERSION=lts-alpine3.18"
+    "docker:build": "docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:latest"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"
@@ -21,12 +21,12 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.1",
     "@types/node": "^20.7.0",
-    "fastify": "^4.23.2",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "fastify": "^4.23.2",
     "@fastify/cookie": "^9.1.0",
     "@fastify/cors": "^8.4.1",
     "@fastify/oauth2": "5.0.0",
