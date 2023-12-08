@@ -27,6 +27,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysql_root_password
       REDIS_PASSWORD: redis_password
+    env_file:
+      - .env.example
     ports:
       - "3000:3000"
     logging:
