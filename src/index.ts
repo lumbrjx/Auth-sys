@@ -6,7 +6,7 @@ import authorizer from "./middlewares/authorizer";
 import refresher from "./middlewares/refresher";
 import cors from "@fastify/cors";
 dotenv.config();
-
+console.log("testing work");
 const server = fastify({
   logger: false,
 });
