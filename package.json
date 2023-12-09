@@ -2,13 +2,17 @@
   "name": "auth-sys",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
     "build": "tsc -p tsconfig.json",
-    "start": "node index.js",
-    "dev": "nodemon --watch src src/index.ts",
-    "postinstall": "prisma generate"
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch src src/index.ts"
+  },
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +27,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "^9.1.0",
+    "@fastify/cors": "^8.4.1",
     "@fastify/oauth2": "5.0.0",
     "@fastify/secure-session": "^7.1.0",
     "@paralleldrive/cuid2": "^2.2.2",
@@ -31,6 +36,7 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
     "ioredis": "^5.3.2",
+    "prisma": "^5.7.0",
     "zod": "^3.22.2"
   }
 }

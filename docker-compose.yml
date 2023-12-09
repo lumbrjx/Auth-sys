@@ -1,17 +1,48 @@
 version: "3"
+
 services:
   prisma-mysql:
     image: mysql:latest
     container_name: prisma-mysql-container-dev1
     environment:
-      MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
-      MYSQL_DATABASE: mysql-image-database1
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+      MYSQL_DATABASE: mysql_database
     ports:
       - "3306:3306"
+    volumes:
+      - prisma-mysql-data:/var/lib/mysql
+
   prisma-redis:
     image: redis:latest
     container_name: prisma-redis-container-dev1
     environment:
-      REDIS_PASSWORD: qsdfsqjklhqo6q4sfFGHazf5464
+      REDIS_PASSWORD: redis_password
     ports:
       - "6379:6379"
+    volumes:
+      - prisma-redis-data:/data
+
+  app:
+    build:
+      context: .
+    container_name: app
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql_root_password
+      REDIS_PASSWORD: redis_password
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app:ro
+      - /usr/src/app/node_modules
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: 5
+    depends_on:
+      - prisma-mysql
+      - prisma-redis
+
+volumes:
+  prisma-mysql-data:
+  prisma-redis-data:

@@ -4,10 +4,18 @@ import configureOAuth2 from "./config/oauth";
 import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
 import refresher from "./middlewares/refresher";
+import cors from "@fastify/cors";
 dotenv.config();
 
 const server = fastify({
   logger: false,
+});
+
+server.register(cors, {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 });
 server.addHook("preHandler", authorizer); // Post session authorizer
 server.addHook("preHandler", refresher); // Session refresher
