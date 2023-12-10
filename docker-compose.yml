@@ -13,14 +13,13 @@ services:
 
   prisma-redis:
     image: redis:latest
-
     ports:
       - "6379:6379"
     volumes:
       - prisma-redis-data:/data
 
   app:
-    image: myimage:latest
+    image: myimage:l1
     environment:
       MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
 
