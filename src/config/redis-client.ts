@@ -1,8 +1,8 @@
-import { FastifyInstance } from "fastify";
-import fastifyRedis from "@fastify/redis";
+import Redis from "ioredis";
 
-export default function configureRedis(fastify: FastifyInstance) {
-  fastify.register(fastifyRedis, {
-    url: process.env.REDIS_URL,
+const redis = new Redis({
+    host: 'prisma-redis', // Docker Compose service name
+    port: 6379,            // Docker Compose port
   });
-}
+
+export default redis;

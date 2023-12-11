@@ -1,8 +1,15 @@
 import { ZodError } from "zod";
-import { LoginSchema, RegisterSchema } from "./auth.model";
+import { LoginSchema, RegisterSchema, tfacodeSchema } from "./auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createUser, getUser } from "./auth.services";
+import redis from "../../config/redis-client";
+import { createId } from "@paralleldrive/cuid2";
+import { generateRandom6DigitNumber } from "../../lib/utils/2fa-code-gen";
+import bcrypt from "bcrypt";
+import * as confdata from "../../config/default.json";
+import { AUTH_TYPES } from "../../constants";
 
+// Login
 export async function loginController(
   req: FastifyRequest,
   reply: FastifyReply,
@@ -16,48 +23,106 @@ export async function loginController(
         .send(userResult.error?.message ?? "Invalid passowrd or email");
     }
     const existingUser = userResult.data;
-
-    if (existingUser?.type === "OAUTH2") {
+    if (existingUser?.type === AUTH_TYPES.OAUTH2) {
       return reply.code(401).send("Invalid operation");
     }
-    if (existingUser?.password !== parsedBody.password) {
-      return reply.code(401).send("Invalid passowrd or email");
+    const match = await bcrypt.compare(
+      parsedBody.password,
+      existingUser?.password as string,
+    );
+    if (match === false) {
+      reply.code(401).send("Invalid passowrd or email");
     }
-    // No need to branch here, always prevent from more nested branching, so you can remove this code comment
-    // if (existingUser?.password === parsedBody.password) {
-    await req.server.redis.set(
-      req.session.sessionId,
-
-      JSON.stringify({ ...existingUser, sessionId: req.session.sessionId })
-
+    if (existingUser?.TWO_FA === true) {
+      const tfaToken = generateRandom6DigitNumber();
+      await redis.set("2fa-" + parsedBody.email, tfaToken);
+      await redis.expire(
+        "2fa-" + parsedBody.email,
+        confdata.redisConf.tfaTokenExp,
+      );
+      return reply.code(200).send("2FA code is sent " + tfaToken);
+    }
+    const sessionId = createId();
+    req.session.set("cookie", sessionId);
+    await redis.set(
+      sessionId,
+      JSON.stringify({ ...existingUser, sessionId: sessionId }),
     );
     // TTL
-    await req.server.redis.expire(req.session.sessionId, 180);
+    await redis.expire(sessionId, confdata.redisConf.sessionExp);
     return reply.send("Authorized");
-    // }
   } catch (error: any) {
     if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.issues[0].message });
     } else {
-      console.log(error);
       return reply.status(500).send({ error: "Internal Server Error" });
     }
   }
 }
-
+// 2FA post code generation
+export async function tfagenController(
+  req: FastifyRequest,
+  reply: FastifyReply,
+) {
+  try {
+    const parsedBody = tfacodeSchema.parse(req.body);
+    const { user } = (await req.params) as any;
+    if (!user) {
+      reply.code(400).send("Error logging in please try again");
+    }
+    const tfauser = await redis.get("2fa-" + user);
+    if (tfauser === null) {
+      return reply.code(401).send("Unauthorized");
+    }
+    if (tfauser.trim() !== parsedBody.code.trim()) {
+      return reply.code(401).send("invalid 2fa code");
+    }
+    const userResult = await getUser(user.trim());
+    if (!userResult.success) {
+      reply
+        .code(401)
+        .send(userResult.error?.message ?? "Invalid passowrd or email");
+    }
+    const existingUser = userResult.data;
+    const sessionId = createId();
+    req.session.set("cookie", sessionId);
+    await redis.set(
+      sessionId,
+      JSON.stringify({ ...existingUser, sessionId: sessionId }),
+    );
+    // TTL
+    await redis.expire(sessionId, 180);
+    await redis.del("2fa-" + user);
+    return reply.send("Authorized");
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ error: error.issues[0].message });
+    } else {
+      return reply.status(500).send({ error: "Internal Server Error" });
+    }
+  }
+}
+// Register
 export async function reigsterController(
   req: FastifyRequest,
   reply: FastifyReply,
 ) {
   try {
     const parsedBody = RegisterSchema.parse(req.body);
-    await createUser(parsedBody);
-    reply.code(201).send({ message: parsedBody });
+    bcrypt.hash(parsedBody.password, 10, (_: any, hash: string) => {
+      createUser({ ...parsedBody, password: hash });
+      // INFO: be careful of ending the request only after the async operation is done
+      reply.code(201).send({ message: parsedBody });
+    });
+    // reply.code(201).send({ message: parsedBody });
   } catch (error: any) {
+    // a much more cleaner way of doing the same thing
+    let code = 500;
+    let msg = "Internal Server Error";
     if (error instanceof ZodError) {
-      reply.status(400).send({ error: error.issues[0].message });
-    } else {
-      reply.status(500).send({ error: "Internal Server Error" });
+      msg = error.issues[0].message;
+      code = 400;
     }
+    reply.status(code).send({ error: msg });
   }
 }

@@ -1,0 +1,27 @@
+{
+  "oauth_start_redirect_path": "/login/google",
+  "oauth_callback_Uri": "http://localhost:8080/api/auth/callback/google",
+  "homeUrl": "http://localhost:8080/",
+  "googleCallback": "/api/auth/callback/google",
+  "home": "/",
+  "login": "/login",
+  "register": "/register",
+  "reset": "/reset",
+  "resetDyn": "/reset/:tokenId",
+  "tfa": "/2fa",
+  "disable2fa": "/2fa/disable",
+  "logout": "/logout",
+  "tfaLoginDyn": "/login/2fa/:user",
+  "tfaLogin": "/login/2fa/",
+  "dashboard": "/dashboard",
+  "cookiesConf": {
+    "cookiename": "my-session-cookie",
+    "sessionName": "session",
+    "maxage": 12000
+  },
+  "redisConf": {
+    "sessionExp": 180,
+    "resetTokenExp": 180,
+    "tfaTokenExp": 180
+  }
+}

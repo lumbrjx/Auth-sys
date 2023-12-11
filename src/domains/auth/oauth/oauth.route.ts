@@ -2,18 +2,22 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 import prisma from "../../../config/prisma-client";
+import redis from "../../../config/redis-client";
+import { createId } from "@paralleldrive/cuid2";
+import * as confdata from "../../../config/default.json";
+import { AUTH_TYPES } from "../../../constants";
 
 export default async function(fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
-    "/api/auth/callback/google",
+    confdata.googleCallback,
     async function(req: FastifyRequest, res: FastifyReply) {
       // Fastify instance gets decorated with this method on OAuth plugin initialization
       const token =
         await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(req);
       //get the user info from google
       const userInfoResponse = await axios.get(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
+        process.env.OAUTH_USERINFO_URL as string,
         { headers: { Authorization: `Bearer ${token.access_token}` } },
       );
       const user = await userInfoResponse.data;
@@ -26,31 +30,29 @@ export default async function(fastify: any) {
           data: {
             username: user.name,
             email: user.email as string,
-
             oauthToken: user.id,
-
-            type: "OAUTH2",
+            type: AUTH_TYPES.OAUTH2,
           },
         });
       }
-
       // save the session in redis
-      const { redis } = fastify;
+      const sessionId = createId();
+      req.session.set("cookie", sessionId);
       await redis.set(
-        req.session.sessionId,
-        JSON.stringify({ ...user, sessionId: req.session.sessionId }),
+        sessionId,
+        JSON.stringify({ ...user, sessionId: sessionId }),
       );
       // TTL
-      await redis.expire(req.session.sessionId, 180);
+      await redis.expire(sessionId, confdata.redisConf.sessionExp);
       //redirect the user to a protected route
-      res.redirect("http://localhost:8080/");
+      res.redirect(confdata.homeUrl);
     },
   );
   // dev function
   fastify.get("/getAllRecords", async (request: any, reply: any) => {
     try {
-      const keys = await fastify.redis.keys("*"); // Get all keys
-      const values = await fastify.redis.mget(...keys); // Get values for all keys
+      const keys = await redis.keys("*"); // Get all keys
+      const values = await redis.mget(...keys); // Get values for all keys
       const records = keys.reduce((result: any, key: any, index: any) => {
         result[key] = values[index];
         return result;
@@ -62,10 +64,10 @@ export default async function(fastify: any) {
       reply.status(500).send("Error fetching records from Redis");
     }
   });
-  fastify.get("/logout", async (req: FastifyRequest, res: FastifyReply) => {
-    await req.server.redis.del(req.session.sessionId);
-    req.session.destroy();
-    res.clearCookie("sessionId");
+  fastify.get(confdata.logout, async (req: any, res: FastifyReply) => {
+    await redis.del(req.session.get("cookie"));
+    req.session.delete();
+    res.clearCookie(confdata.cookiesConf.cookiename);
     res.send("logged out");
   });
 }

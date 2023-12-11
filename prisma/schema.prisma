@@ -10,12 +10,13 @@ datasource db {
   url      = env("MYSQL_DATABASE_URL")
 }
 
-model User {
+model user {
   id         String  @id @default(cuid())
   username   String  @unique
   password   String?
   oauthToken String?
   email      String? @unique
-  preference String?
   type       String
+  TWO_FA     Boolean @default(false)
+  twoFaEmail String?
 }
