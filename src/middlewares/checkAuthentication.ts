@@ -4,12 +4,13 @@ import redis from "../config/redis-client";
 import * as confdata from "../config/default.json";
 export default async function checkAuthentication(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const session = await redis.get(request.session.get("cookie"));
     console.log(session);
-    if (session === null) {
+    // from session == null -> !session, because why not
+    if (!session) {
       reply.code(401).redirect(confdata.homeUrl);
     }
   } catch (err) {

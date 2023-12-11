@@ -6,10 +6,12 @@ import { createId } from "@paralleldrive/cuid2";
 import redis from "../../../config/redis-client";
 import * as confdata from "../../../config/default.json";
 import bcrypt from "bcrypt";
+import { AUTH_TYPES } from "../../../constants";
+
 // Reset
 export async function resetController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = ResetSchema.parse(req.body);
@@ -17,7 +19,7 @@ export async function resetController(
     if (user.data === null) {
       reply.send("A reset link is sent to your email adress.");
     }
-    if (user.data?.type === "OAUTH2") {
+    if (user.data?.type === AUTH_TYPES.OAUTH2) {
       reply.code(401).send("An Error occured please try again");
     }
     const userToken = createId();
@@ -37,7 +39,7 @@ export async function resetController(
 // Post reset link generation
 export async function resetTokenController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = ResetTokenSchema.parse(req.body);

@@ -5,11 +5,12 @@ import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
 import refresher from "./middlewares/refresher";
 import cors from "@fastify/cors";
+
 dotenv.config();
-console.log("testing work");
-const server = fastify({
-  logger: false,
-});
+
+console.log("Testing work");
+
+const server = fastify({ logger: false });
 
 server.register(cors, {
   origin: true,
@@ -29,13 +30,17 @@ server.register(import("./domains/auth/reset/reset.route")); // Reset password r
 server.register(import("./domains/auth/2FA/2FA.route")); // 2fa routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
-server.get("/", async (request, reply) => {
+server.get("/", async (_, reply) => {
   reply.send("Auth System example made by CLOG9");
 });
 
-const PORT = parseInt(process.env.PORT ?? "") || 8080;
+server.get("/ping", async (_, reply) => {
+  reply.send("pong");
+});
 
-server.listen({ port: PORT }, (err, address) => {
+export const port = parseInt(process.env.PORT ?? "") || 8080;
+
+server.listen({ port }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

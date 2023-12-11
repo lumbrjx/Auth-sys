@@ -7,10 +7,12 @@ import { createId } from "@paralleldrive/cuid2";
 import { generateRandom6DigitNumber } from "../../lib/utils/2fa-code-gen";
 import bcrypt from "bcrypt";
 import * as confdata from "../../config/default.json";
+import { AUTH_TYPES } from "../../constants";
+
 // Login
 export async function loginController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = LoginSchema.parse(req.body);
@@ -21,12 +23,12 @@ export async function loginController(
         .send(userResult.error?.message ?? "Invalid passowrd or email");
     }
     const existingUser = userResult.data;
-    if (existingUser?.type === "OAUTH2") {
+    if (existingUser?.type === AUTH_TYPES.OAUTH2) {
       return reply.code(401).send("Invalid operation");
     }
     const match = await bcrypt.compare(
       parsedBody.password,
-      existingUser?.password as string
+      existingUser?.password as string,
     );
     if (match === false) {
       reply.code(401).send("Invalid passowrd or email");
@@ -36,7 +38,7 @@ export async function loginController(
       await redis.set("2fa-" + parsedBody.email, tfaToken);
       await redis.expire(
         "2fa-" + parsedBody.email,
-        confdata.redisConf.tfaTokenExp
+        confdata.redisConf.tfaTokenExp,
       );
       return reply.code(200).send("2FA code is sent " + tfaToken);
     }
@@ -44,7 +46,7 @@ export async function loginController(
     req.session.set("cookie", sessionId);
     await redis.set(
       sessionId,
-      JSON.stringify({ ...existingUser, sessionId: sessionId })
+      JSON.stringify({ ...existingUser, sessionId: sessionId }),
     );
     // TTL
     await redis.expire(sessionId, confdata.redisConf.sessionExp);
@@ -60,7 +62,7 @@ export async function loginController(
 // 2FA post code generation
 export async function tfagenController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = tfacodeSchema.parse(req.body);
@@ -86,7 +88,7 @@ export async function tfagenController(
     req.session.set("cookie", sessionId);
     await redis.set(
       sessionId,
-      JSON.stringify({ ...existingUser, sessionId: sessionId })
+      JSON.stringify({ ...existingUser, sessionId: sessionId }),
     );
     // TTL
     await redis.expire(sessionId, 180);
@@ -103,19 +105,24 @@ export async function tfagenController(
 // Register
 export async function reigsterController(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const parsedBody = RegisterSchema.parse(req.body);
-    await bcrypt.hash(parsedBody.password, 10, (err: any, hash: string) => {
+    bcrypt.hash(parsedBody.password, 10, (_: any, hash: string) => {
       createUser({ ...parsedBody, password: hash });
+      // INFO: be careful of ending the request only after the async operation is done
+      reply.code(201).send({ message: parsedBody });
     });
-    reply.code(201).send({ message: parsedBody });
+    // reply.code(201).send({ message: parsedBody });
   } catch (error: any) {
+    // a much more cleaner way of doing the same thing
+    let code = 500;
+    let msg = "Internal Server Error";
     if (error instanceof ZodError) {
-      reply.status(400).send({ error: error.issues[0].message });
-    } else {
-      reply.status(500).send({ error: "Internal Server Error" });
+      msg = error.issues[0].message;
+      code = 400;
     }
+    reply.status(code).send({ error: msg });
   }
 }

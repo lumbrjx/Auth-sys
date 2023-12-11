@@ -1,6 +1,8 @@
 import oAuthPlugin from "@fastify/oauth2";
 import * as confdata from "./default.json";
-async function configureOAuth2(fastify: any) {
+
+// can just directly do this as well :)
+export default async function configureOAuth2(fastify: any) {
   fastify.register(oAuthPlugin, {
     name: "googleOAuth2",
     credentials: {
@@ -17,4 +19,3 @@ async function configureOAuth2(fastify: any) {
     callbackUri: confdata.oauth_callback_Uri,
   });
 }
-export default configureOAuth2;

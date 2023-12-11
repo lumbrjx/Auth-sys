@@ -3,6 +3,8 @@ import { ResetSchema } from "../auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { edit2fa, getUser } from "../auth.services";
 import redis from "../../../config/redis-client";
+import { AUTH_TYPES } from "../../../constants";
+
 // 2FA enable
 export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
   try {
@@ -13,7 +15,7 @@ export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
     if (user.data === null) {
       return reply.send("A 2FA code is sent to your email adress.");
     }
-    if (user.data?.type === "OAUTH2") {
+    if (user.data?.type === AUTH_TYPES.OAUTH2) {
       return reply.code(401).send("An Error occured please try again");
     }
     await edit2fa(user.data?.email as string, parsedBody.email, true);
@@ -26,10 +28,11 @@ export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
     }
   }
 }
+
 // 2FA disable
 export async function TFAControllerDisable(
   req: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const session = await redis.get(req.session.get("cookie"));
@@ -38,7 +41,7 @@ export async function TFAControllerDisable(
     if (user.data === null) {
       return reply.send("A 2FA code is sent to your email adress.");
     }
-    if (user.data?.type === "OAUTH2") {
+    if (user.data?.type === AUTH_TYPES.OAUTH2) {
       return reply.code(401).send("An Error occured please try again");
     }
     await edit2fa(user.data?.email as string, null, false);

@@ -3,7 +3,7 @@ import redis from "../config/redis-client";
 import * as confdata from "../config/default.json";
 export default async function authorizer(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     if (

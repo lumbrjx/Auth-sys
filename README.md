@@ -86,5 +86,6 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 - 2FA
 - password Reset
-- edit db tables and fileds
+- edit db tables and fields
 - hash passwords
+
