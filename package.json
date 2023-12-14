@@ -8,9 +8,9 @@
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
+    "start": "npx prisma db push --schema=./schema.prisma && npx prisma generate --schema=./schema.prisma && node dist/index.js",
     "dev": "nodemon --watch src src/index.ts",
-    "docker:build": "sudo docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l1"
+    "docker:build": "sudo docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l3.8.3"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma"

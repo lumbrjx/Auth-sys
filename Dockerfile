@@ -24,6 +24,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
 # COPY --chown=node:node --from=builder /usr/src/app/.env .env
 COPY --chown=node:node --from=builder /usr/src/app/package.json .
+COPY --chown=node:node --from=builder /usr/src/app/prisma .
 COPY --chown=node:node --from=builder /usr/src/app/package-lock.json .
 COPY --chown=node:node --from=builder /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
 RUN --mount=type=cache,target=/usr/src/app/.npm \ 
@@ -33,4 +34,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["dumb-init", "node", "/usr/src/app/dist/index.js"]
+CMD ["dumb-init", "npm" ,"run", "start"]

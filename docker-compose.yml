@@ -19,9 +19,10 @@ services:
       - prisma-redis-data:/data
 
   app:
-    image: myimage:l1
+    image: myimage:l3.8.3
     environment:
       MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
+      MYSQL_DATABASE: mysql_database
 
     env_file:
       - .env
@@ -39,3 +40,4 @@ services:
 volumes:
   prisma-mysql-data:
   prisma-redis-data:
+  node_modules:
