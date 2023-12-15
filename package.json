@@ -1,19 +1,18 @@
 {
   "name": "auth-sys",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "npx prisma migrate dev",
+    "drizzle:generate": "drizzle-kit generate:mysql",
+    "drizzle:migrate": "tsx src/db/migrate.ts",
+    "drizzle:studio": "drizzle-kit studio",
+    "drizzle:push": "drizzle-kit push:mysql",
     "build": "tsc -p tsconfig.json",
     "start": "npx prisma db push --schema=./schema.prisma && npx prisma generate --schema=./schema.prisma && node dist/index.js",
     "dev": "nodemon --watch src src/index.ts",
     "docker:build": "sudo docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l3.8.3"
-  },
-  "prisma": {
-    "schema": "./prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
@@ -21,23 +20,25 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.1",
     "@types/node": "^20.7.0",
+    "drizzle-kit": "^0.20.6",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "fastify": "^4.23.2",
     "@fastify/cookie": "^9.1.0",
     "@fastify/cors": "^8.4.1",
     "@fastify/oauth2": "5.0.0",
     "@fastify/secure-session": "~7.1.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^5.3.1",
     "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.1",
+    "fastify": "^4.23.2",
     "ioredis": "^5.3.2",
-    "prisma": "^5.7.0",
+    "mysql2": "^3.6.5",
+    "tsx": "^4.6.2",
     "zod": "^3.22.2"
   }
 }

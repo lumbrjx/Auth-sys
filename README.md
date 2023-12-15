@@ -84,7 +84,6 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 ## Todo
 
-- 2FA
-- password Reset
-- edit db tables and fileds
-- hash passwords
+- drizzle services functions
+- manage secrets
+- edit docker

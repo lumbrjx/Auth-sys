@@ -1,4 +1,4 @@
-import prisma, { user } from "../../config/prisma-client";
+import prisma, { user } from "../../config/drizzle-client";
 import { Result, parseToResult } from "../../result.model";
 import { RegisterData } from "./auth.model";
 // Create new user in DB

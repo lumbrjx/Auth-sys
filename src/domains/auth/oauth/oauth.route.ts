@@ -1,7 +1,7 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
-import prisma from "../../../config/prisma-client";
+import prisma from "../../../config/drizzle-client";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
 import * as confdata from "../../../config/default.json";
