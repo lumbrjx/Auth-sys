@@ -87,3 +87,6 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 - drizzle services functions
 - manage secrets
 - edit docker
+- make a consts file
+- turn conf.json into conf.ts
+- switch to postgres

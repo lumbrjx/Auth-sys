@@ -1,7 +1,7 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
-import prisma from "../../../config/drizzle-client";
+// import prisma from "../../../config/drizzle-client";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
 import * as confdata from "../../../config/default.json";
@@ -20,19 +20,19 @@ export default async function (fastify: any) {
       );
       const user = await userInfoResponse.data;
       // Store user data or create a new user in your database using Prisma
-      const existingUser = await prisma.user.findUnique({
-        where: { email: user.email },
-      });
-      if (!existingUser) {
-        await prisma.user.create({
-          data: {
-            username: user.name,
-            email: user.email as string,
-            oauthToken: user.id,
-            type: "OAUTH2",
-          },
-        });
-      }
+      // const existingUser = await prisma.user.findUnique({
+      //   where: { email: user.email },
+      // });
+      // if (!existingUser) {
+      //   await prisma.user.create({
+      //     data: {
+      //       username: user.name,
+      //       email: user.email as string,
+      //       oauthToken: user.id,
+      //       type: "OAUTH2",
+      //     },
+      //   });
+      // }
       // save the session in redis
       const sessionId = createId();
       req.session.set("cookie", sessionId);

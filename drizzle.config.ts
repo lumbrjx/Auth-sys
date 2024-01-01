@@ -4,8 +4,11 @@ export default {
   schema: "./src/db/schema.ts",
   out: "./src/db/drizzle",
   breakpoints: true,
-  driver: "mysql2",
+  driver: "pg",
   dbCredentials: {
-    uri: process.env.MYSQL_DATABASE_URL as string,
+    connectionString: process.env.PG_DATABASE as string,
+    ssl: false,
   },
+  verbose: true,
+  strict: true,
 } satisfies Config;

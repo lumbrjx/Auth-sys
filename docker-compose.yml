@@ -1,28 +1,29 @@
 version: "3"
 
 services:
-  prisma-mysql-new:
-    image: mysql:latest
+  drzl-pg:
+    image: postgres:latest
     environment:
-      MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
-      MYSQL_DATABASE: mysql_database
+      POSTGRES_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
+      POSTGRES_USER: root
+      POSTGRES_DB: pgs_database
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - prisma-mysql-data:/var/lib/mysqlnew
+      - drzl-pg-data:/var/lib/postgres
 
-  prisma-redis:
+  drzl-redis:
     image: redis:latest
     ports:
       - "6379:6379"
     volumes:
-      - prisma-redis-data:/data
+      - drzl-redis-data:/data
 
   app:
     image: myimage:l3.8.3
     environment:
-      MYSQL_ROOT_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
-      MYSQL_DATABASE: mysql_database
+      POSTGRES_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
+      POSTGRES_DB: pgs_database
 
     env_file:
       - .env
@@ -34,10 +35,10 @@ services:
         max-size: 10m
         max-file: 5
     depends_on:
-      - prisma-mysql
-      - prisma-redis
+      - drzl-pg
+      - drzl-redis
 
 volumes:
-  prisma-mysql-data:
-  prisma-redis-data:
+  drzl-pg-data:
+  drzl-redis-data:
   node_modules:
