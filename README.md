@@ -1,6 +1,13 @@
 ﻿# Auth-sys
 
-A full auth system made with Fastify plugins only, typescript, and redis for session storage.
+A full auth system made with Fastify plugins only, typescript and redis for session storage.
+
+## Used stack
+
+- Fastify (Typescript)
+- Drizzle
+- Redis
+- Postgres
 
 ## getting started
 
@@ -14,33 +21,28 @@ pnpm install
 make sure to define the your secret keys in a .env file in the root dir before starting the .env file should look like this:
 
 ```ts
-// session secret for session management
-SESSION_SECRET = "sqfdsqfkjskjfgsdfgdsfg984sdfgsdfqs984f98sqfdsqdf";
-
 // Google config for Google OAuth
 GOOGLE_CLIENT_ID = "set your own client id from google console";
 GOOGLE_CLIENT_SECRET = "set your own client secret from google console";
 
 // Docker compose database URL
-MYSQL_DATABASE_URL =
-  "mysql://root:LdsfgjpmLDSFg8941sdfgsdfc@127.0.0.1:3306/mysql-image-database1";
+PG_DATABASE =
+  "postgres://root:LdsfgjpmLDSFg8941sdfgsdfc@localhost:5432/pgs_database";
 
 // OAuth URL to gather user info from Google
 OAUTH_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
+
+// Session secrets
+SECRET = "qsdqfghhsdfghhgdsgsdfgsfdg87sdqf7qd";
+SALT = "qsfqhfjkqsdfqjsk";
 ```
 
-after setting .env file setup the docker compose containers with this command:
+after setting .env file run the docker compose containers :
 
 _make sure you have docker already installed on your machine_
 
 ```bash
 docker compose up -d
-```
-
-then you you'll be able to run the server without any issues with this command:
-
-```bash
-pnpm dev
 ```
 
 ## API endpoints
@@ -89,4 +91,3 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 - edit docker
 - make a consts file
 - turn conf.json into conf.ts
-- switch to postgres
