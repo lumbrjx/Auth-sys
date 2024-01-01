@@ -2,6 +2,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 // import prisma from "../../../config/drizzle-client";
+import { csts } from "config/consts";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -33,13 +34,13 @@ export default async function (fastify: any) {
       //       username: user.name,
       //       email: user.email as string,
       //       oauthToken: user.id,
-      //       type: "OAUTH2",
+      //       type: csts.OAUTH
       //     },
       //   });
       // }
       // save the session in redis
       const sessionId = createId();
-      req.session.set("cookie", sessionId);
+      req.session.set(csts.COOKIE, sessionId);
       await redis.set(
         sessionId,
         JSON.stringify({ ...user, sessionId: sessionId })
@@ -67,9 +68,11 @@ export default async function (fastify: any) {
     }
   });
   fastify.get(endpoints.logout, async (req: any, res: FastifyReply) => {
-    await redis.del(req.session.get("cookie"));
+    await redis.del(req.session.get(csts.COOKIE));
     req.session.delete();
     res.clearCookie(cookiesConf.cookiename);
     res.send("logged out");
   });
 }
+
+// OAUTH2

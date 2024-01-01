@@ -7,6 +7,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { generateRandom6DigitNumber } from "../../lib/utils/2fa-code-gen";
 import bcrypt from "bcrypt";
 import { redisConf } from "../../config/default.config";
+import { csts } from "config/consts";
 // Login
 export async function loginController(
   req: FastifyRequest,
@@ -21,7 +22,7 @@ export async function loginController(
         .send(userResult.error?.message ?? "Invalid passowrd or email");
     }
     const existingUser = userResult.data;
-    if (existingUser?.type === "OAUTH2") {
+    if (existingUser?.type === csts.OAUTH) {
       return reply.code(401).send("Invalid operation");
     }
     const match = await bcrypt.compare(
@@ -33,12 +34,15 @@ export async function loginController(
     }
     if (existingUser?.TWO_FA === true) {
       const tfaToken = generateRandom6DigitNumber();
-      await redis.set("2fa-" + parsedBody.email, tfaToken);
-      await redis.expire("2fa-" + parsedBody.email, redisConf.tfaTokenExp);
+      await redis.set(csts.TWO_FACTOR_AUTH + parsedBody.email, tfaToken);
+      await redis.expire(
+        csts.TWO_FACTOR_AUTH + parsedBody.email,
+        redisConf.tfaTokenExp
+      );
       return reply.code(200).send("2FA code is sent " + tfaToken);
     }
     const sessionId = createId();
-    req.session.set("cookie", sessionId);
+    req.session.set(csts.COOKIE, sessionId);
     await redis.set(
       sessionId,
       JSON.stringify({ ...existingUser, sessionId: sessionId })
@@ -65,7 +69,7 @@ export async function tfagenController(
     if (!user) {
       reply.code(400).send("Error logging in please try again");
     }
-    const tfauser = await redis.get("2fa-" + user);
+    const tfauser = await redis.get(csts.TWO_FACTOR_AUTH + user);
     if (tfauser === null) {
       return reply.code(401).send("Unauthorized");
     }
@@ -80,14 +84,14 @@ export async function tfagenController(
     }
     const existingUser = userResult.data;
     const sessionId = createId();
-    req.session.set("cookie", sessionId);
+    req.session.set(csts.COOKIE, sessionId);
     await redis.set(
       sessionId,
       JSON.stringify({ ...existingUser, sessionId: sessionId })
     );
     // TTL
     await redis.expire(sessionId, 180);
-    await redis.del("2fa-" + user);
+    await redis.del(csts.TWO_FACTOR_AUTH + user);
     return reply.send("Authorized");
   } catch (error: any) {
     if (error instanceof ZodError) {
@@ -116,3 +120,4 @@ export async function reigsterController(
     }
   }
 }
+// OAUTH2, 2fa-, cookie
