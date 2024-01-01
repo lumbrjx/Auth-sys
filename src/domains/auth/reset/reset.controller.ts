@@ -4,8 +4,8 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { editPassword, getUser } from "../auth.services";
 import { createId } from "@paralleldrive/cuid2";
 import redis from "../../../config/redis-client";
-import * as confdata from "../../../config/default.json";
 import bcrypt from "bcrypt";
+import { redisConf } from "config/default.config";
 // Reset
 export async function resetController(
   req: FastifyRequest,
@@ -22,7 +22,7 @@ export async function resetController(
     }
     const userToken = createId();
     await redis.set(userToken, parsedBody.email);
-    await redis.expire(userToken, confdata.redisConf.resetTokenExp);
+    await redis.expire(userToken, redisConf.resetTokenExp);
     reply
       .code(201)
       .send({ fakeEmail: "http://localhost:8080/reset/" + userToken });

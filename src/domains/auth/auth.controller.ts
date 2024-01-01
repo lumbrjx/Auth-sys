@@ -6,7 +6,7 @@ import redis from "../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
 import { generateRandom6DigitNumber } from "../../lib/utils/2fa-code-gen";
 import bcrypt from "bcrypt";
-import * as confdata from "../../config/default.json";
+import { redisConf } from "../../config/default.config";
 // Login
 export async function loginController(
   req: FastifyRequest,
@@ -34,10 +34,7 @@ export async function loginController(
     if (existingUser?.TWO_FA === true) {
       const tfaToken = generateRandom6DigitNumber();
       await redis.set("2fa-" + parsedBody.email, tfaToken);
-      await redis.expire(
-        "2fa-" + parsedBody.email,
-        confdata.redisConf.tfaTokenExp
-      );
+      await redis.expire("2fa-" + parsedBody.email, redisConf.tfaTokenExp);
       return reply.code(200).send("2FA code is sent " + tfaToken);
     }
     const sessionId = createId();
@@ -47,7 +44,7 @@ export async function loginController(
       JSON.stringify({ ...existingUser, sessionId: sessionId })
     );
     // TTL
-    await redis.expire(sessionId, confdata.redisConf.sessionExp);
+    await redis.expire(sessionId, redisConf.sessionExp);
     return reply.send("Authorized");
   } catch (error: any) {
     if (error instanceof ZodError) {

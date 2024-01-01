@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
 import checkAuthentication from "../../middlewares/checkAuthentication";
 import { adminController } from "./admin.controller";
-import * as confdata from "../../config/default.json";
+import { endpoints } from "../../config/default.config";
 export default async function (app: FastifyInstance) {
   app.get(
-    confdata.dashboard,
+    endpoints.dashboard,
     { preHandler: checkAuthentication },
     adminController
   );

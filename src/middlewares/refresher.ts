@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import redis from "../config/redis-client";
-import * as confdata from "../config/default.json";
+import { endpoints, redisConf } from "../config/default.config";
 export default async function refresher(
   request: FastifyRequest,
   reply: FastifyReply
@@ -11,12 +11,9 @@ export default async function refresher(
     const sessionparsed = await JSON.parse(session as string);
     const sessionTTL = await redis.ttl(sessionparsed.sessionId);
     if (sessionTTL < 60) {
-      await redis.expire(
-        sessionparsed.sessionId,
-        confdata.redisConf.sessionExp
-      );
+      await redis.expire(sessionparsed.sessionId, redisConf.sessionExp);
     }
   } catch (err) {
-    reply.code(500).redirect(confdata.homeUrl);
+    reply.code(500).redirect(endpoints.homeUrl);
   }
 }

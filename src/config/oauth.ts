@@ -1,5 +1,5 @@
 import oAuthPlugin from "@fastify/oauth2";
-import * as confdata from "./default.json";
+import { endpoints } from "./default.config";
 async function configureOAuth2(fastify: any) {
   fastify.register(oAuthPlugin, {
     name: "googleOAuth2",
@@ -12,9 +12,9 @@ async function configureOAuth2(fastify: any) {
     },
     scope: ["openid", "profile", "email"],
     // register a fastify url to start the redirect flow
-    startRedirectPath: confdata.oauth_start_redirect_path,
+    startRedirectPath: endpoints.oauth_start_redirect_path,
     // redirect here after the user login
-    callbackUri: confdata.oauth_callback_Uri,
+    callbackUri: endpoints.oauth_callback_Uri,
   });
 }
 export default configureOAuth2;

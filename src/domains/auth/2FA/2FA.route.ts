@@ -1,11 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { TFAController, TFAControllerDisable } from "./2FA.controller";
 import checkAuthentication from "../../../middlewares/checkAuthentication";
-import * as confdata from "../../../config/default.json";
+import { endpoints } from "../../../config/default.config";
 export default async function (app: FastifyInstance) {
-  app.put(confdata.tfa, { preHandler: checkAuthentication }, TFAController);
+  app.put(endpoints.tfa, { preHandler: checkAuthentication }, TFAController);
   app.put(
-    confdata.disable2fa,
+    endpoints.disable2fa,
     { preHandler: checkAuthentication },
     TFAControllerDisable
   );

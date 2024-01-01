@@ -91,3 +91,4 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 - edit docker
 - make a consts file
 - turn conf.json into conf.ts
+- edit session refresh functionality

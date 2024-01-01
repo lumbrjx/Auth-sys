@@ -4,9 +4,9 @@ import {
   reigsterController,
   tfagenController,
 } from "./auth.controller";
-import * as confdata from "../../config/default.json";
+import { endpoints } from "../../config/default.config";
 export default async function (app: FastifyInstance) {
-  app.post(confdata.login, loginController);
-  app.post(confdata.register, reigsterController);
-  app.post(confdata.tfaLoginDyn, tfagenController);
+  app.post(endpoints.login, loginController);
+  app.post(endpoints.register, reigsterController);
+  app.post(endpoints.tfaLoginDyn, tfagenController);
 }
