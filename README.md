@@ -89,5 +89,4 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 - drizzle services functions
 - manage secrets
 - edit docker
-- turn conf.json into conf.ts
 - edit session refresh functionality
