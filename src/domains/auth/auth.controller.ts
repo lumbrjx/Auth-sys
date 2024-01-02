@@ -7,7 +7,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { generateRandom6DigitNumber } from "../../lib/utils/2fa-code-gen";
 import bcrypt from "bcrypt";
 import { redisConf } from "../../config/default.config";
-import { csts } from "config/consts";
+import { csts } from "../../config/consts";
 // Login
 export async function loginController(
   req: FastifyRequest,

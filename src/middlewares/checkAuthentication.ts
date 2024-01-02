@@ -2,7 +2,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import redis from "../config/redis-client";
 import { endpoints } from "../config/default.config";
-import { csts } from "config/consts";
+import { csts } from "../config/consts";
 export default async function checkAuthentication(
   request: FastifyRequest,
   reply: FastifyReply

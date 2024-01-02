@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import redis from "../config/redis-client";
 import { endpoints, redisConf } from "../config/default.config";
-import { csts } from "config/consts";
+import { csts } from "../config/consts";
 export default async function refresher(
   request: FastifyRequest,
   reply: FastifyReply

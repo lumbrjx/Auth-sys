@@ -5,3 +5,6 @@ export const csts = {
   RESET_LINK: "http://localhost:8080/reset/",
 };
 // OAUTH2, 2fa-, cookie ,link
+module.exports = {
+  csts,
+};

@@ -3,7 +3,7 @@ import { ResetSchema } from "../auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { edit2fa, getUser } from "../auth.services";
 import redis from "../../../config/redis-client";
-import { csts } from "config/consts";
+import { csts } from "../../../config/consts";
 // 2FA enable
 export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
   try {

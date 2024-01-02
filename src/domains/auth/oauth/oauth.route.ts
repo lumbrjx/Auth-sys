@@ -2,7 +2,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 // import prisma from "../../../config/drizzle-client";
-import { csts } from "config/consts";
+import { csts } from "../../../config/consts";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
 import {

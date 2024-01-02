@@ -14,15 +14,13 @@ interface userType {
   twoFaEmail: string | null;
 }
 
-export async function createUser(user: RegisterData, testDb?: any) {
-  const newUser =
-    (await testDb) ||
-    db.insert(schema.user).values({
-      username: user.username,
-      password: user.password,
-      email: user.email,
-      type: "CREDENTIALS",
-    });
+export async function createUser(user: RegisterData) {
+  const newUser = await db.insert(schema.user).values({
+    username: user.username,
+    password: user.password,
+    email: user.email,
+    type: "CREDENTIALS",
+  });
 
   return newUser.command;
 }

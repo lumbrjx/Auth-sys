@@ -5,7 +5,8 @@ import { editPassword, getUser } from "../auth.services";
 import { createId } from "@paralleldrive/cuid2";
 import redis from "../../../config/redis-client";
 import bcrypt from "bcrypt";
-import { redisConf } from "config/default.config";
+import { redisConf } from "../../../config/default.config";
+import { csts } from "../../../config/consts";
 // Reset
 export async function resetController(
   req: FastifyRequest,
@@ -17,15 +18,13 @@ export async function resetController(
     if (user.data === null) {
       reply.send("A reset link is sent to your email adress.");
     }
-    if (user.data?.type === "OAUTH2") {
+    if (user.data?.type === csts.OAUTH) {
       reply.code(401).send("An Error occured please try again");
     }
     const userToken = createId();
     await redis.set(userToken, parsedBody.email);
     await redis.expire(userToken, redisConf.resetTokenExp);
-    reply
-      .code(201)
-      .send({ fakeEmail: "http://localhost:8080/reset/" + userToken });
+    reply.code(201).send({ fakeEmail: csts.RESET_LINK + userToken });
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });

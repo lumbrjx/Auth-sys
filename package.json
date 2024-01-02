@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@testcontainers/postgresql": "^10.4.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.10.6",
     "@types/pg": "^8.10.9",

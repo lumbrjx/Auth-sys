@@ -86,7 +86,10 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 ## Todo
 
-- drizzle services functions
+- drizzle services functions + tests
 - manage secrets
 - edit docker
 - edit session refresh functionality
+- use znv
+- update global error handler
+- dev, test, prod config system
