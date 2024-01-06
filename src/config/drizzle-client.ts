@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../db/schema";
+import { config } from "./environment.config";
 export const pool = new Pool({
-  connectionString:
-    "postgres://root:LdsfgjpmLDSFg8941sdfgsdfc@localhost:5432/pgs_database",
+  connectionString: config.dbUrl,
   ssl: false,
 });
 

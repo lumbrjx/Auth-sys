@@ -86,10 +86,8 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 ## Todo
 
-- manage secrets
-- edit docker
+- create CI/CD pipes
+- edit docker + docker secrets
 - edit session refresh functionality
-- use znv
 - update global error handler
-- dev, test, prod config system
 - edit the returned values from the controllers

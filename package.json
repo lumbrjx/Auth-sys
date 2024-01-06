@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "vitest",
+    "test": "NODE_ENV=testing vitest",
     "drizzle:generate": "drizzle-kit generate:pg",
     "drizzle:migrate": "tsx src/db/migrate.ts",
     "logfn": "tsx src/log/log.ts",
@@ -12,7 +12,7 @@
     "drizzle:push": "drizzle-kit push:pg",
     "build": "tsc -p tsconfig.json",
     "start": "npx prisma db push --schema=./schema.prisma && npx prisma generate --schema=./schema.prisma && node dist/index.js",
-    "dev": "nodemon --watch src src/index.ts",
+    "dev": "NODE_ENV=development nodemon --watch src src/index.ts",
     "docker:build": "sudo docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l3.8.3"
   },
   "keywords": [],

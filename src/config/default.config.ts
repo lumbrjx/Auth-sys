@@ -1,7 +1,8 @@
+import { config } from "./environment.config";
 export const endpoints = {
   oauth_start_redirect_path: "/login/google",
-  oauth_callback_Uri: "http://localhost:8080/api/auth/callback/google",
-  homeUrl: "http://localhost:8080/",
+  oauth_callback_Uri: `${config.apiUrl}/api/auth/callback/google`,
+  homeUrl: `${config.apiUrl}`,
   home: "/",
   login: "/login",
   register: "/register",
