@@ -10,7 +10,7 @@ export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
     const parsedBody = ResetSchema.parse(req.body);
     const session = await redis.get(req.session.get(csts.COOKIE));
     const parsedSession = await JSON.parse(session as string);
-    const user = await getUser(parsedSession.email);
+    const user = await getUser(parsedSession.email, false);
     if (user.data === null) {
       return reply.send("A 2FA code is sent to your email adress.");
     }
@@ -35,7 +35,7 @@ export async function TFAControllerDisable(
   try {
     const session = await redis.get(req.session.get(csts.COOKIE));
     const parsedSession = await JSON.parse(session as string);
-    const user = await getUser(parsedSession.email);
+    const user = await getUser(parsedSession.email, false);
     if (user.data === null) {
       return reply.send("A 2FA code is sent to your email adress.");
     }

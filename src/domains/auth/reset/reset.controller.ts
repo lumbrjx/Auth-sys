@@ -14,7 +14,7 @@ export async function resetController(
 ) {
   try {
     const parsedBody = ResetSchema.parse(req.body);
-    const user = await getUser(parsedBody.email);
+    const user = await getUser(parsedBody.email, false);
     if (user.data === null) {
       reply.send("A reset link is sent to your email adress.");
     }

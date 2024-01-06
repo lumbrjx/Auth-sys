@@ -15,11 +15,9 @@ export async function loginController(
 ) {
   try {
     const parsedBody = LoginSchema.parse(req.body);
-    const userResult = await getUser(parsedBody.email);
+    const userResult = await getUser(parsedBody.email, false);
     if (!userResult.success) {
-      reply
-        .code(401)
-        .send(userResult.error?.message ?? "Invalid passowrd or email");
+      reply.code(401).send(userResult.error ?? "Invalid passowrd or email");
     }
     const existingUser = userResult.data;
     if (existingUser?.type === csts.OAUTH) {
@@ -76,11 +74,9 @@ export async function tfagenController(
     if (tfauser.trim() !== parsedBody.code.trim()) {
       return reply.code(401).send("invalid 2fa code");
     }
-    const userResult = await getUser(user.trim());
+    const userResult = await getUser(user.trim(), false);
     if (!userResult.success) {
-      reply
-        .code(401)
-        .send(userResult.error?.message ?? "Invalid passowrd or email");
+      reply.code(401).send(userResult.error ?? "Invalid passowrd or email");
     }
     const existingUser = userResult.data;
     const sessionId = createId();

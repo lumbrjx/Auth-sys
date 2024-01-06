@@ -2,39 +2,78 @@ import { db } from "../../config/drizzle-client";
 import { Result, parseToResult } from "../../result.model";
 import { RegisterData } from "./auth.model";
 import * as schema from "../../db/schema";
+import { eq } from "drizzle-orm";
+import { csts } from "../../config/consts";
 // Create new user in DB
 interface userType {
-  id: string;
+  id?: string;
   username: string | null;
   password: string | null;
   oauthToken: string | null;
-  email: string;
+  email: string | null;
   type: string | null;
   TWO_FA: boolean | null;
   twoFaEmail: string | null;
 }
+interface RegisterOAuthType {
+  username: string;
+  oauthToken: string;
+  email: string;
+}
+interface tfaType {
+  usertfaEmail: string | null;
+  tfa: boolean | null;
+}
+export async function createOAuthUser(user: RegisterOAuthType) {
+  try {
+    const newUser = await db.insert(schema.user).values({
+      username: user.username,
+      oauthToken: user.oauthToken,
+      email: user.email,
+      type: csts.OAUTH,
+    });
 
+    return parseToResult(newUser.command);
+  } catch (error: any) {
+    return parseToResult(undefined, error.constraint);
+  }
+}
 export async function createUser(user: RegisterData) {
-  const newUser = await db.insert(schema.user).values({
-    username: user.username,
-    password: user.password,
-    email: user.email,
-    type: "CREDENTIALS",
-  });
+  try {
+    const newUser = await db.insert(schema.user).values({
+      username: user.username,
+      password: user.password,
+      email: user.email,
+      type: csts.CREDENTIALS,
+    });
 
-  return newUser.command;
+    return parseToResult(newUser.command);
+  } catch (error: any) {
+    return parseToResult(undefined, error.constraint);
+  }
 }
 // Get a user from DB
 export async function getUser(
-  email: string
-): Promise<Result<userType | undefined, Error | undefined>> {
+  email: string,
+  includeId: boolean
+): Promise<Result<userType | undefined, Error | string | undefined>> {
   try {
     const user = await db.query.user.findFirst({
-      with: {
-        email: email,
+      where: (user, { eq }) => eq(user.email, email),
+      columns: {
+        id: includeId,
+        username: true,
+        password: true,
+        oauthToken: true,
+        email: true,
+        type: true,
+        TWO_FA: true,
+        twoFaEmail: true,
       },
     });
-    console.log(user);
+    if (!user) {
+      return parseToResult(undefined, "user doesn't exist");
+    }
     return parseToResult(await user);
   } catch (error) {
     return parseToResult(undefined, error as Error);
@@ -44,20 +83,16 @@ export async function getUser(
 export async function editPassword(
   password: string,
   email: string
-): Promise<Result<string | undefined | null, Error | undefined>> {
+): Promise<Result<string | undefined | null, Error | string | undefined>> {
   try {
-    // const user = await prisma.user.update({
-    //   where: {
-    //     email: email,
-    //   },
-    //   data: {
-    //     password: password,
-    //   },
-    // });
-    const user = "hey";
-    return parseToResult(user);
+    const user = await db
+      .update(schema.user)
+      .set({ password: password })
+      .where(eq(schema.user.email, email))
+      .returning({ userEmail: schema.user.email });
+    return parseToResult(user[0].userEmail);
   } catch (error) {
-    return parseToResult(undefined, error as Error);
+    return parseToResult(undefined, "user doesn't exist");
   }
 }
 // Edit 2FA state
@@ -65,19 +100,21 @@ export async function edit2fa(
   email: string,
   tfaemail: string | null,
   type: boolean
-): Promise<Result<string | undefined | null, Error | undefined>> {
+): Promise<Result<tfaType | undefined | null, Error | string | undefined>> {
   try {
-    // const user = await prisma.user.update({
-    //   where: {
-    //     email: email,
-    //   },
-    //   data: {
-    //     twoFaEmail: tfaemail,
-    //     TWO_FA: type,
-    //   },
-    // });
-    const user = "hey";
-    return parseToResult(user);
+    const user = await db
+      .update(schema.user)
+      .set({ twoFaEmail: tfaemail, TWO_FA: type })
+      .where(eq(schema.user.email, email))
+      .returning({
+        usertfaEmail: schema.user.twoFaEmail,
+        tfa: schema.user.TWO_FA,
+      });
+    if (!user[0]) {
+      return parseToResult(undefined, "user doesn't exist");
+    }
+
+    return parseToResult(user[0]);
   } catch (error) {
     return parseToResult(undefined, error as Error);
   }
@@ -88,4 +125,5 @@ module.exports = {
   getUser,
   editPassword,
   edit2fa,
+  createOAuthUser,
 };

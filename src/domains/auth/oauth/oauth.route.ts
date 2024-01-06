@@ -1,7 +1,6 @@
 // auth.js
 import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
-// import prisma from "../../../config/drizzle-client";
 import { csts } from "../../../config/consts";
 import redis from "../../../config/redis-client";
 import { createId } from "@paralleldrive/cuid2";
@@ -10,6 +9,7 @@ import {
   cookiesConf,
   redisConf,
 } from "../../../config/default.config";
+import { createOAuthUser, getUser } from "../auth.services";
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
@@ -24,20 +24,14 @@ export default async function (fastify: any) {
         { headers: { Authorization: `Bearer ${token.access_token}` } }
       );
       const user = await userInfoResponse.data;
-      // Store user data or create a new user in your database using Prisma
-      // const existingUser = await prisma.user.findUnique({
-      //   where: { email: user.email },
-      // });
-      // if (!existingUser) {
-      //   await prisma.user.create({
-      //     data: {
-      //       username: user.name,
-      //       email: user.email as string,
-      //       oauthToken: user.id,
-      //       type: csts.OAUTH
-      //     },
-      //   });
-      // }
+      const existingUser = await getUser(user.email, false);
+      if (!existingUser.success) {
+        await createOAuthUser({
+          username: user.name,
+          email: user.email as string,
+          oauthToken: user.id,
+        });
+      }
       // save the session in redis
       const sessionId = createId();
       req.session.set(csts.COOKIE, sessionId);
