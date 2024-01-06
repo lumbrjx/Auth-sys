@@ -1,10 +1,11 @@
-import fastify from "fastify";
+import fastify, { errorCodes } from "fastify";
 import configureSession from "./config/session";
 import configureOAuth2 from "./config/oauth";
 import loadEnv from "./config/environment.config";
 import authorizer from "./middlewares/authorizer";
 import refresher from "./middlewares/refresher";
 import cors from "@fastify/cors";
+import errHandler from "./middlewares/errHandler";
 
 const currentEnvironment = process.env.NODE_ENV || "development";
 loadEnv(currentEnvironment);
@@ -31,8 +32,12 @@ server.register(import("./domains/auth/reset/reset.route")); // Reset password r
 server.register(import("./domains/auth/2FA/2FA.route")); // 2fa routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
-server.get("/", async (request, reply) => {
-  reply.send("Auth System example made by CLOG9");
+server.get("/", (request, reply) => {
+  throw new Error("hemy mo");
+});
+
+server.setErrorHandler(async function (error, request, reply) {
+  errHandler(error, reply);
 });
 
 const PORT = parseInt(process.env.PORT ?? "") || 8080;

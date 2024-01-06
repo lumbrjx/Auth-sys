@@ -9,7 +9,6 @@ export default async function checkAuthentication(
 ) {
   try {
     const session = await redis.get(request.session.get(csts.COOKIE));
-    console.log(session);
     if (session === null) {
       reply.code(401).redirect(endpoints.homeUrl);
     }

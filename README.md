@@ -91,3 +91,4 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 - edit session refresh functionality
 - update global error handler
 - edit the returned values from the controllers
+- simplify the controllers
