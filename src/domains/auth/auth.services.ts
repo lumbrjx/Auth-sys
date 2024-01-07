@@ -1,29 +1,16 @@
 import { db } from "../../config/drizzle-client";
 import { Result, parseToResult } from "../../result.model";
-import { RegisterData } from "./auth.model";
+import {
+  RegisterData,
+  RegisterOAuthType,
+  tfaType,
+  userType,
+} from "./auth.model";
 import * as schema from "../../db/schema";
 import { eq } from "drizzle-orm";
 import { csts } from "../../config/consts";
 // Create new user in DB
-interface userType {
-  id?: string;
-  username: string | null;
-  password: string | null;
-  oauthToken: string | null;
-  email: string | null;
-  type: string | null;
-  TWO_FA: boolean | null;
-  twoFaEmail: string | null;
-}
-interface RegisterOAuthType {
-  username: string;
-  oauthToken: string;
-  email: string;
-}
-interface tfaType {
-  usertfaEmail: string | null;
-  tfa: boolean | null;
-}
+
 export async function createOAuthUser(user: RegisterOAuthType) {
   try {
     const newUser = await db.insert(schema.user).values({

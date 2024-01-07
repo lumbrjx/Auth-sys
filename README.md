@@ -88,7 +88,4 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 - create CI/CD pipes
 - edit docker + docker secrets
-- edit session refresh functionality
 - update global error handler
-- edit the returned values from the controllers
-- simplify the controllers

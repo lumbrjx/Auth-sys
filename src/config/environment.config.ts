@@ -24,7 +24,8 @@ export default loadEnv;
 const environments: Record<string, AppConfig> = {
   development: {
     apiUrl: "http://localhost:3000",
-    dbUrl: process.env.PG_DATABASE,
+    dbUrl:
+      "postgres://root:LdsfgjpmLDSFg8941sdfgsdfc@localhost:5432/pgs_database",
   },
   testing: {
     apiUrl: "http://localhost:3000",

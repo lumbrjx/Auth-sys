@@ -3,13 +3,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import axios from "axios";
 import { csts } from "../../../config/consts";
 import redis from "../../../config/redis-client";
-import { createId } from "@paralleldrive/cuid2";
-import {
-  endpoints,
-  cookiesConf,
-  redisConf,
-} from "../../../config/default.config";
+import { endpoints, cookiesConf } from "../../../config/default.config";
 import { createOAuthUser, getUser } from "../auth.services";
+import { createRedisSession } from "../../../lib/auth-utils/redis-session";
 export default async function (fastify: any) {
   // Define a route for Google OAuth2 callback
   fastify.get(
@@ -32,15 +28,8 @@ export default async function (fastify: any) {
           oauthToken: user.id,
         });
       }
-      // save the session in redis
-      const sessionId = createId();
-      req.session.set(csts.COOKIE, sessionId);
-      await redis.set(
-        sessionId,
-        JSON.stringify({ ...user, sessionId: sessionId })
-      );
-      // TTL
-      await redis.expire(sessionId, redisConf.sessionExp);
+      // save session in redis
+      await createRedisSession(req, user);
       //redirect the user to a protected route
       res.redirect(endpoints.homeUrl);
     }
@@ -65,7 +54,7 @@ export default async function (fastify: any) {
     await redis.del(req.session.get(csts.COOKIE));
     req.session.delete();
     res.clearCookie(cookiesConf.cookiename);
-    res.send("logged out");
+    res.status(200).send({ ok: true, message: "logged out" });
   });
 }
 

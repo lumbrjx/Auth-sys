@@ -1,15 +1,13 @@
-import fastify, { errorCodes } from "fastify";
+import fastify from "fastify";
 import configureSession from "./config/session";
 import configureOAuth2 from "./config/oauth";
 import loadEnv from "./config/environment.config";
 import authorizer from "./middlewares/authorizer";
-import refresher from "./middlewares/refresher";
 import cors from "@fastify/cors";
 import errHandler from "./middlewares/errHandler";
 
 const currentEnvironment = process.env.NODE_ENV || "development";
 loadEnv(currentEnvironment);
-console.log("testing work");
 const server = fastify({
   logger: false,
 });
@@ -21,11 +19,11 @@ server.register(cors, {
   credentials: true,
 });
 server.addHook("preHandler", authorizer); // Post session authorizer
-server.addHook("preHandler", refresher); // Session refresher
 
 configureOAuth2(server); // oauth provider
 configureSession(server); // session config
 
+server.register(import("./domains/auth/refresh/refresh.route")); // session refresher
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
 server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
 server.register(import("./domains/auth/reset/reset.route")); // Reset password routes
@@ -33,7 +31,7 @@ server.register(import("./domains/auth/2FA/2FA.route")); // 2fa routes
 server.register(import("./domains/admin/admin.route")); // protected route
 
 server.get("/", (request, reply) => {
-  throw new Error("hemy mo");
+  reply.send("auth sys by clog");
 });
 
 server.setErrorHandler(async function (error, request, reply) {

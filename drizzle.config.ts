@@ -1,3 +1,4 @@
+import loadEnv, { config } from "./src/config/environment.config";
 import type { Config } from "drizzle-kit";
 
 export default {
@@ -6,7 +7,7 @@ export default {
   breakpoints: true,
   driver: "pg",
   dbCredentials: {
-    connectionString: process.env.PG_DATABASE as string,
+    connectionString: config?.dbUrl as string,
     ssl: false,
   },
   verbose: true,

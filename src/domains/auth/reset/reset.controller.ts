@@ -16,15 +16,20 @@ export async function resetController(
     const parsedBody = ResetSchema.parse(req.body);
     const user = await getUser(parsedBody.email, false);
     if (user.data === null) {
-      reply.send("A reset link is sent to your email adress.");
+      return reply.send({
+        ok: true,
+        message: "A reset link is sent to your email address.",
+      });
     }
     if (user.data?.type === csts.OAUTH) {
-      reply.code(401).send("An Error occured please try again");
+      return reply
+        .status(401)
+        .send({ ok: false, message: "An Error occured please try again" });
     }
     const userToken = createId();
     await redis.set(userToken, parsedBody.email);
     await redis.expire(userToken, redisConf.resetTokenExp);
-    reply.code(201).send({ fakeEmail: csts.RESET_LINK + userToken });
+    reply.code(201).send({ ok: true, fakeEmail: csts.RESET_LINK + userToken });
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });
@@ -42,21 +47,27 @@ export async function resetTokenController(
     const parsedBody = ResetTokenSchema.parse(req.body);
     const { tokenId } = (await req.params) as any;
     if (!tokenId) {
-      reply.code(400).send("Error reseting your password please try again");
+      return reply.status(400).send({
+        ok: false,
+        message: "Error reseting your password please try again",
+      });
     }
     const token_email = await redis.get(tokenId);
     if (token_email === null) {
-      reply.code(401).send("unauthorized");
+      return reply.status(401).send({
+        ok: false,
+        message: "unauthorized",
+      });
     }
     const editedpass = await bcrypt.hash(parsedBody.password, 10);
     const edited = await editPassword(editedpass, token_email as string);
     if (edited.success === false) {
-      reply.status(500).send({ error: "Internal Server Error" });
+      reply.status(500).send({ ok: false, error: "Internal Server Error" });
     }
     if (edited.success === true) {
       await redis.del(tokenId);
     }
-    reply.code(201).send({ edited: edited });
+    reply.code(201).send({ ok: true, edited: edited });
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });

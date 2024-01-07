@@ -36,7 +36,25 @@ export const RegisterOauthSchema = z.object({
   password: z.string().optional(),
   email: z.string(),
 });
-
+export interface userType {
+  id?: string;
+  username: string | null;
+  password: string | null;
+  oauthToken: string | null;
+  email: string | null;
+  type: string | null;
+  TWO_FA: boolean | null;
+  twoFaEmail: string | null;
+}
+export interface RegisterOAuthType {
+  username: string;
+  oauthToken: string;
+  email: string;
+}
+export interface tfaType {
+  usertfaEmail: string | null;
+  tfa: boolean | null;
+}
 export interface RegisterData extends z.infer<typeof RegisterSchema> {}
 export interface LoginData extends z.infer<typeof LoginSchema> {}
 export interface ResetData extends z.infer<typeof ResetSchema> {}

@@ -15,6 +15,7 @@ export const endpoints = {
   tfaLoginDyn: "/login/2fa/:user",
   tfaLogin: "/login/2fa/",
   dashboard: "/dashboard",
+  refreshsession: "/refresh",
 };
 export const cookiesConf = {
   cookiename: "my-session-cookie",

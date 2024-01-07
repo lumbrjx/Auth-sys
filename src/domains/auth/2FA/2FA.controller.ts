@@ -12,13 +12,18 @@ export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
     const parsedSession = await JSON.parse(session as string);
     const user = await getUser(parsedSession.email, false);
     if (user.data === null) {
-      return reply.send("A 2FA code is sent to your email adress.");
+      return reply.send({
+        ok: true,
+        message: "A 2FA code is sent to your email address.",
+      });
     }
     if (user.data?.type === csts.OAUTH) {
-      return reply.code(401).send("An Error occured please try again");
+      return reply
+        .code(401)
+        .send({ ok: false, error: "An Error occured please try again" });
     }
     await edit2fa(user.data?.email as string, parsedBody.email, true);
-    reply.code(200).send("2FA enabeled");
+    return reply.code(200).send({ ok: true, message: "2FA enabeled" });
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });
@@ -37,13 +42,18 @@ export async function TFAControllerDisable(
     const parsedSession = await JSON.parse(session as string);
     const user = await getUser(parsedSession.email, false);
     if (user.data === null) {
-      return reply.send("A 2FA code is sent to your email adress.");
+      return reply.send({
+        ok: true,
+        message: "A 2FA code is sent to your email address.",
+      });
     }
     if (user.data?.type === csts.OAUTH) {
-      return reply.code(401).send("An Error occured please try again");
+      return reply
+        .code(401)
+        .send({ ok: false, error: "An Error occured please try again" });
     }
     await edit2fa(user.data?.email as string, null, false);
-    reply.code(200).send("2FA disabled");
+    return reply.code(200).send({ ok: true, message: "2FA disabled" });
   } catch (error: any) {
     if (error instanceof ZodError) {
       reply.status(400).send({ error: error.issues[0].message });
