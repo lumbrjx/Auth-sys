@@ -39,7 +39,7 @@ SALT = "qsfqhfjkqsdfqjsk";
 
 after setting .env file run the docker compose containers :
 
-_make sure you have docker already installed on your machine_
+make sure you have docker already installed on your machine\_
 
 ```bash
 docker compose up -d
