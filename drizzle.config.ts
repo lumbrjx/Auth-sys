@@ -1,9 +1,21 @@
 import loadEnv, { config } from "./src/config/environment.config";
 import type { Config } from "drizzle-kit";
 
+const currentEnvironment = process.env.NODE_ENV || "development";
+loadEnv(currentEnvironment);
+const urls = {
+  schema:
+    process.env.NODE_ENV === "development"
+      ? "./src/db/schema.ts"
+      : "./dist/src/db/schema.js",
+  out:
+    process.env.NODE_ENV === "development"
+      ? "./src/db/drizzle"
+      : "./dist/src/db/drizzle",
+};
 export default {
-  schema: "./src/db/schema.ts",
-  out: "./src/db/drizzle",
+  schema: urls.schema,
+  out: urls.out,
   breakpoints: true,
   driver: "pg",
   dbCredentials: {

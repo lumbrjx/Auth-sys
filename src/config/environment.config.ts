@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 interface AppConfig {
   apiUrl: string;
   dbUrl?: string;
+  schema?: string;
+  out?: string;
 }
 
 interface EnvConfig {
@@ -26,6 +28,8 @@ const environments: Record<string, AppConfig> = {
     apiUrl: "http://localhost:3000",
     dbUrl:
       "postgres://root:LdsfgjpmLDSFg8941sdfgsdfc@localhost:5432/pgs_database",
+    schema: "./src/db/schema.ts",
+    out: "./src/db/drizzle",
   },
   testing: {
     apiUrl: "http://localhost:3000",
@@ -34,6 +38,8 @@ const environments: Record<string, AppConfig> = {
   },
   production: {
     apiUrl: "",
+    schema: "./dist/src/db/schema.ts",
+    out: "./dist/src/db/drizzle",
   },
 };
 
