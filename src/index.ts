@@ -1,13 +1,11 @@
 import fastify from "fastify";
 import configureSession from "./config/session";
 import configureOAuth2 from "./config/oauth";
-import loadEnv from "./config/environment.config";
+import dotenv from "dotenv";
 import authorizer from "./middlewares/authorizer";
 import cors from "@fastify/cors";
 import errHandler from "./middlewares/errHandler";
-
-const currentEnvironment = process.env.NODE_ENV || "development";
-loadEnv(currentEnvironment);
+dotenv.config();
 const server = fastify({
   logger: false,
 });
