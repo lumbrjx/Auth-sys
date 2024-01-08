@@ -3,8 +3,8 @@ version: "3"
 services:
   drzl-pg:
     image: postgres:latest
-    env_file:
-      - ./.env.prod
+    # env_file:
+    #   - ./.env.prod
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
