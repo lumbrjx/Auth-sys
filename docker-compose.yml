@@ -20,15 +20,17 @@ services:
       - drzl-redis-data:/data
 
   app:
-    image: myimage:l3.8.7
+    image: myimage:l3.8.8
     environment:
       POSTGRES_PASSWORD: LdsfgjpmLDSFg8941sdfgsdfc
       POSTGRES_DB: pgs_database
 
     env_file:
-      - .env.prod
+      - ./.env.prod
     ports:
       - "3000:3000"
+    expose:
+      - "3000"
     logging:
       driver: json-file
       options:

@@ -1,10 +1,9 @@
 // session config
 import { FastifyInstance } from "fastify";
-import fastifyCookie from "@fastify/cookie";
+// import fastifyCookie from "@fastify/cookie";
 import fastifySecureSession from "@fastify/secure-session";
 import { endpoints, cookiesConf } from "./default.config";
 async function configureSession(fastify: FastifyInstance) {
-  fastify.register(fastifyCookie);
   fastify.register(fastifySecureSession, {
     // the name of the attribute decorated on the request-object, defaults to 'session'
     sessionName: cookiesConf.sessionName,

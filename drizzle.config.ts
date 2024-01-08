@@ -20,5 +20,5 @@ export default {
     ssl: false,
   },
   verbose: true,
-  strict: true,
+  strict: false,
 } satisfies Config;

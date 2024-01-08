@@ -2,7 +2,7 @@
   "name": "auth-sys",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "test": "vitest",
     "drizzle:generate": "drizzle-kit generate:pg --config=./drizzle.config.ts",
@@ -10,9 +10,9 @@
     "drizzle:studio": "drizzle-kit studio",
     "drizzle:push": "drizzle-kit push:pg",
     "build": "tsc -p tsconfig.json",
-    "start": "npx drizzle-kit generate:pg --config=./dist/drizzle.config.js && npx drizzle-kit push:pg --config=./dist/drizzle.config.js && node dist/index.js",
-    "dev": "nodemon --watch src src/index.ts",
-    "docker:build": "docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l3.8.7"
+    "start": "npx drizzle-kit generate:pg --config=./dist/drizzle.config.js &&  npx drizzle-kit push:pg --config=./dist/drizzle.config.js && node dist/src/index.js",
+    "dev": "nodemon -r dotenv/config src/index.ts  dotenv_config_path=./.env.dev",
+    "docker:build": "docker build . --build-arg NODE_VERSION=lts-alpine3.18 -t myimage:l3.8.8"
   },
   "keywords": [],
   "author": "",
