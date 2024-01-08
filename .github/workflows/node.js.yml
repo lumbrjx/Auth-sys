@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Start containers
-      run: docker compose up -d
+      run: docker compose --env-file .env.test up -d
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
