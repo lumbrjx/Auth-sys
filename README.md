@@ -87,5 +87,3 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 ## Todo
 
 - create CI/CD pipes
-- edit docker + docker secrets
-- update global error handler
