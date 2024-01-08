@@ -19,7 +19,7 @@ server.register(cors, {
 server.addHook("preHandler", authorizer); // Post session authorizer
 
 configureOAuth2(server); // oauth provider
-// server.register(fastifyCookie);
+// server.register(fastifyCookie)
 configureSession(server); // session config
 server.register(import("./domains/auth/refresh/refresh.route")); // session refresher
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
