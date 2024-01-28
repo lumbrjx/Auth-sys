@@ -3,7 +3,7 @@ import { ResetSchema, ResetTokenSchema } from "../auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { editPassword, getUser } from "../auth.services";
 import { createId } from "@paralleldrive/cuid2";
-import redis from "../../../config/redis-client";
+import { redis } from "../../../config/redis-client";
 import bcrypt from "bcrypt";
 import { redisConf } from "../../../config/default.config";
 import { csts } from "../../../config/consts";
@@ -27,8 +27,8 @@ export async function resetController(
         .send({ ok: false, message: "An Error occured please try again" });
     }
     const userToken = createId();
-    await redis.set(userToken, parsedBody.email);
-    await redis.expire(userToken, redisConf.resetTokenExp);
+    await redis.set(csts.RESET + userToken, parsedBody.email);
+    await redis.expire(csts.RESET + userToken, redisConf.resetTokenExp);
     reply.code(201).send({ ok: true, fakeEmail: csts.RESET_LINK + userToken });
   } catch (error: any) {
     if (error instanceof ZodError) {
@@ -52,7 +52,7 @@ export async function resetTokenController(
         message: "Error reseting your password please try again",
       });
     }
-    const token_email = await redis.get(tokenId);
+    const token_email = await redis.get(csts.RESET + tokenId);
     if (token_email === null) {
       return reply.status(401).send({
         ok: false,
@@ -65,7 +65,7 @@ export async function resetTokenController(
       reply.status(500).send({ ok: false, error: "Internal Server Error" });
     }
     if (edited.success === true) {
-      await redis.del(tokenId);
+      await redis.del(csts.RESET + tokenId);
     }
     reply.code(201).send({ ok: true, edited: edited });
   } catch (error: any) {

@@ -11,9 +11,9 @@ const server = fastify({
 });
 
 server.register(cors, {
-  origin: true,
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  // allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 });
 server.addHook("preHandler", authorizer); // Post session authorizer
@@ -21,7 +21,6 @@ server.addHook("preHandler", authorizer); // Post session authorizer
 configureOAuth2(server); // oauth provider
 // server.register(fastifyCookie)
 configureSession(server); // session config
-server.register(import("./domains/auth/refresh/refresh.route")); // session refresher
 server.register(import("./domains/auth/auth.route")); // credentials auth routes
 server.register(import("./domains/auth/oauth/oauth.route")); // oauth routes
 server.register(import("./domains/auth/reset/reset.route")); // Reset password routes
@@ -33,7 +32,7 @@ server.get("/", (request, reply) => {
 
 const PORT = parseInt(process.env.PORT ?? "") || 8080;
 
-server.listen({ port: PORT }, (err, address) => {
+server.listen({ port: PORT, host: process.env.HOST }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import redis from "../config/redis-client";
+// import redis from "../config/redis-client";
 import { endpoints } from "../config/default.config";
 import { csts } from "../config/consts";
 export default async function authorizer(
@@ -13,9 +13,8 @@ export default async function authorizer(
       request.url.trim() === endpoints.register ||
       request.url.trim().includes(endpoints.tfaLogin)
     ) {
-      const session = await redis.get(request.session.get(csts.COOKIE));
-      if (session) {
-        reply.code(401).redirect(endpoints.homeUrl);
+      if (request.session.authenticated) {
+        return reply.code(401).redirect(endpoints.homeUrl);
       }
     }
   } catch (err) {

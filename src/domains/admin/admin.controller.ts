@@ -4,5 +4,5 @@ export async function adminController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  reply.send(request.url);
+  return reply.send(request.url);
 }

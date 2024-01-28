@@ -1,6 +1,6 @@
 // 2FA Code generator
 import { csts } from "../../config/consts";
-import redis from "../../config/redis-client";
+import { redis } from "../../config/redis-client";
 import { redisConf } from "../../config/default.config";
 
 interface parsedBodyType {
@@ -19,4 +19,5 @@ export async function generate2FACode(parsedBody: parsedBodyType) {
     csts.TWO_FACTOR_AUTH + parsedBody.email,
     redisConf.tfaTokenExp
   );
+  return tfaToken;
 }

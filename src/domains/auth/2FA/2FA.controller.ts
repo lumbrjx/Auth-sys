@@ -2,15 +2,13 @@ import { ZodError } from "zod";
 import { ResetSchema } from "../auth.model";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { edit2fa, getUser } from "../auth.services";
-import redis from "../../../config/redis-client";
+import { redis } from "../../../config/redis-client";
 import { csts } from "../../../config/consts";
 // 2FA enable
 export async function TFAController(req: FastifyRequest, reply: FastifyReply) {
   try {
     const parsedBody = ResetSchema.parse(req.body);
-    const session = await redis.get(req.session.get(csts.COOKIE));
-    const parsedSession = await JSON.parse(session as string);
-    const user = await getUser(parsedSession.email, false);
+    const user = await getUser(req.session.get("email"), false);
     if (user.data === null) {
       return reply.send({
         ok: true,
@@ -38,9 +36,7 @@ export async function TFAControllerDisable(
   reply: FastifyReply
 ) {
   try {
-    const session = await redis.get(req.session.get(csts.COOKIE));
-    const parsedSession = await JSON.parse(session as string);
-    const user = await getUser(parsedSession.email, false);
+    const user = await getUser(req.session.get("email"), false);
     if (user.data === null) {
       return reply.send({
         ok: true,

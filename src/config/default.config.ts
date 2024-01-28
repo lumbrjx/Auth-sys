@@ -20,7 +20,7 @@ export const endpoints = {
 export const cookiesConf = {
   cookiename: "my-session-cookie",
   sessionName: "session",
-  maxage: 12000,
+  maxage: 120000,
 };
 export const redisConf = {
   sessionExp: 180,
