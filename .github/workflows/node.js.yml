@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
+      - run: npm run docker:build
       - run: sed -i 's/\.env\.dev/\.env\.test/g' ./docker-compose.yml
       - run: sudo docker compose --env-file ./.env.test up -d
       - run: npm test
