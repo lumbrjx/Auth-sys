@@ -25,10 +25,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: sed -i 's/\.env\.dev/\.env\.test/g' ./docker-compose.yml
+      - run: sed -i 's/\.env/\.env\.test/g' ./docker-compose.yml
       - run: sudo docker compose --env-file ./.env.test up -d
-      - run: npx drizzle-kit generate:pg
-      - run: npx drizzle-kit push:pg
+      - run: npm run drizzle:generate
+      - run: npm run drizzle:pusht
 
       - run: npm run test
       - run: npm run docker:build

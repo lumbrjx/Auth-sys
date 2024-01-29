@@ -1,5 +1,8 @@
 import { environments } from "./src/config/environment.config";
 import type { Config } from "drizzle-kit";
+// import dotenv from "dotenv";
+
+// dotenv.config({});
 // const urls = {
 //   schema:
 //     process.env.NODE_ENV === "development"
