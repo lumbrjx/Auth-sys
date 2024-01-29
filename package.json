@@ -6,6 +6,7 @@
   "scripts": {
     "test": "vitest",
     "drizzle:generate": "drizzle-kit generate:pg --config=./drizzle.config.ts",
+    "drizzle:generatet": "dotenv -e ./.env.test drizzle-kit generate:pg --config=./drizzle.config.ts",
     "drizzle:migrate": "tsx src/db/migrate.ts",
     "drizzle:studio": "drizzle-kit studio",
     "drizzle:pusht": "dotenv -e ./.env.test npx drizzle-kit push:pg",
