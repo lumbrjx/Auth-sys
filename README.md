@@ -86,4 +86,5 @@ ITS A DEV ROUTE DON4T USE IT FOR PROD.
 
 ## Todo
 
-- create CI/CD pipes
+- nginx setup
+- private registery

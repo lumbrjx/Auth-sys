@@ -29,6 +29,5 @@ jobs:
       - run: sudo docker compose --env-file ./.env.test up -d
       - run: npm run drizzle:generatet
       - run: npm run drizzle:pusht
-
       - run: npm run test
       - run: npm run docker:build
