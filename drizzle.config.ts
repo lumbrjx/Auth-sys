@@ -13,6 +13,7 @@ import type { Config } from "drizzle-kit";
 export default {
   schema: environments.schema,
   out: environments.out,
+
   breakpoints: true,
   driver: "pg",
   dbCredentials: {
