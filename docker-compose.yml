@@ -11,8 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - drzl-pg-data:/var/lib/postgres
-    env_file:
-      - ./.env.prod
+
     networks:
       - auths-network
 
@@ -22,8 +21,7 @@ services:
       - "6379:6379"
     volumes:
       - drzl-redis-data:/data
-    env_file:
-      - ./.env.prod
+
     networks:
       - auths-network
 
