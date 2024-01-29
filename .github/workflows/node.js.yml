@@ -27,5 +27,8 @@ jobs:
       - run: npm ci
       - run: sed -i 's/\.env\.dev/\.env\.test/g' ./docker-compose.yml
       - run: sudo docker compose --env-file ./.env.test up -d
+      - run: npx drizzle-kit generate:pg
+      - run: npx drizzle-kit push:pg
+
       - run: npm run test
       - run: npm run docker:build
