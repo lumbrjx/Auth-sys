@@ -25,8 +25,7 @@ services:
 
   app:
     image: myimage:l3.9.0
-    profiles:
-      - webapp
+    profiles: ["webapp"]
     environment:
       POSTGRES_PASSWORD: ${VITE_POSTGRES_PASSWORD}
       POSTGRES_DB: ${VITE_POSTGRES_DB}
@@ -46,6 +45,7 @@ services:
 
   nginx:
     image: nginx:1.25
+    profiles: ["nginx"]
     ports:
       - "80:80"
     volumes:
